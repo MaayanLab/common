@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.mssm.pharm.maayanlab</groupId>
 	<artifactId>common</artifactId>
-	<version>1.9-SNAPSHOT</version>
+	<version>2.0</version>
 	<packaging>pom</packaging>
 	<name>common</name>
 	<url>http://maven.apache.org</url>
@@ -19,6 +19,7 @@
 		<module>common-graph</module>
 		<module>common-swing</module>
 		<module>common-geneticalgorithm</module>
-		<module>common-bio</module>
+        <module>common-bio</module>
+        <module>common-database</module>
 	</modules>
 </project>

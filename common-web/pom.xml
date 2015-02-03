@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>common</artifactId>
 		<groupId>edu.mssm.pharm.maayanlab</groupId>
-		<version>1.9-SNAPSHOT</version>
+		<version>2.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.mssm.pharm.maayanlab.common</groupId>
@@ -33,12 +33,20 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>4.1.8.Final</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
 	</dependencies>
+	<version>2.0</version>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -1,4 +1,4 @@
-package edu.mssm.pharm.maayanlab.common.web;
+package edu.mssm.pharm.maayanlab.common.database;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
