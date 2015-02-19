@@ -10,7 +10,7 @@
 	<groupId>edu.mssm.pharm.maayanlab.common</groupId>
 	<artifactId>common-web</artifactId>
 	<name>common-web</name>
-	<url>http://maven.apache.org</url>
+	<version>2.0-SNAPSHOT</version>
 	<dependencies>
 		<!-- JUnit dependencies for testing -->
 		<dependency>
@@ -34,7 +34,7 @@
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
-	<version>2.0</version>
+	
 	
 	<build>
 		<plugins>

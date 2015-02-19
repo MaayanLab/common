@@ -10,7 +10,7 @@
 	<groupId>edu.mssm.pharm.maayanlab.common</groupId>
 	<artifactId>common-bio</artifactId>
 	<name>common-bio</name>
-	<url>http://maven.apache.org</url>
+	<version>1.9</version>
 	<dependencies>
 		<dependency>
 			<groupId>edu.mssm.pharm.maayanlab.common</groupId>
@@ -24,5 +24,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<version>1.9-SNAPSHOT</version>
+	
 </project>
