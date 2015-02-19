@@ -13,8 +13,8 @@
 	<name>common</name>
 
     <scm>
-        <connection>scm:git:git://git-server:8081/maayanlab/common-java-libraries.git</connection>
-        <developerConnection>scm:git:git://git-server:8081/maayanlab/common-java-libraries.git</developerConnection>
+        <connection>scm:git:http://git-server:8081/maayanlab/common-java-libraries.git</connection>
+        <developerConnection>scm:git:http://git-server:8081/maayanlab/common-java-libraries.git</developerConnection>
     <tag>common-2.1</tag>
   </scm>
     
