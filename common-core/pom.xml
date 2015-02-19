@@ -18,7 +18,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<version>1.9-SNAPSHOT</version>
+	<version>1.9</version>
 	
 	<build>
 		<plugins>
@@ -35,6 +35,6 @@
 	</build>
 
   <scm>
-    <tag>common-core-1.9</tag>
+    <tag>common-2.0</tag>
   </scm>
 </project>
