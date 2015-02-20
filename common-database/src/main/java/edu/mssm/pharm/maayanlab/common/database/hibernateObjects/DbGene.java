@@ -67,4 +67,9 @@ public class DbGene implements Serializable, Gene {
 	public Double getWeight() {
 		return 1.0;
 	}
+
+	@Override
+	public boolean equals(Gene other) {
+		return other.getName().equals(name);
+	}
 }

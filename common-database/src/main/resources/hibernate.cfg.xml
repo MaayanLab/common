@@ -6,8 +6,7 @@
 		<property name="hibernate.connection.provider_class">org.hibernate.connection.TomcatJDBCConnectionProvider</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-<!-- 		<property name="hibernate.connection.url">jdbc:mysql://amp.pharm.mssm.edu/enrichr</property> -->
-		<property name="hibernate.current_session_context_class">managed</property>
+		<property name="hibernate.current_session_context_class">thread</property>
 		<!-- Set username/password in hibernate.properties on classpath -->
 		<!-- <property name="hibernate.connection.username"></property> -->
 		<!-- <property name="hibernate.connection.password"></property> -->

@@ -20,6 +20,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.id.IdentityGenerator.GetGeneratedKeysDelegate;
 
 import edu.mssm.pharm.maayanlab.common.database.Gene;
 
@@ -109,5 +110,10 @@ public class DbTermGene implements Serializable, Gene{
 
 	public void setDbGene(DbGene gene) {
 		this.dbGene = gene;
+	}
+
+	@Override
+	public boolean equals(Gene other) {
+		return dbGene.equals(other);
 	}
 }

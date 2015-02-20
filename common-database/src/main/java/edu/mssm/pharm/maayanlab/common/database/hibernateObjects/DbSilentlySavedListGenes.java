@@ -110,4 +110,9 @@ public class DbSilentlySavedListGenes implements Serializable, Gene {
 	public String getName() {
 		return dbGene.getName();
 	}
+
+	@Override
+	public boolean equals(Gene other) {
+		return getGene().equals(other);
+	}
 }

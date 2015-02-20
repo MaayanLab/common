@@ -169,10 +169,10 @@ public class DbGeneSetLibrary implements Serializable {
 	}
 
 	@Transient
-	public int getGenePoolSize(Session hbSession) {
+	public int getGenePoolSize() {
 		if (genePoolSize == -1) {
 			long poolSize = 0;
-			poolSize = (Long) hbSession.getNamedQuery("genePoolSize").setString("libraryName", libraryName).uniqueResult();
+			poolSize = (Long) HibernateUtil.getCurrentSession().getNamedQuery("genePoolSize").setString("libraryName", libraryName).uniqueResult();
 			genePoolSize = (int) poolSize;
 		}
 

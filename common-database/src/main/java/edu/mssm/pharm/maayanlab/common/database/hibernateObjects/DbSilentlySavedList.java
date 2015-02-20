@@ -21,14 +21,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.Session;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.criterion.Restrictions;
 
 import edu.mssm.pharm.maayanlab.common.bio.InputGenes;
+import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 
 @Entity
 @DynamicInsert
@@ -74,7 +73,7 @@ public class DbSilentlySavedList implements Serializable {
 		this.ipAddress = ipAddress;
 	}
 	
-	public DbSilentlySavedList(Collection<String> geneList, boolean validate, Session hbSession) throws ParseException {
+	public DbSilentlySavedList(Collection<String> geneList, boolean validate) throws ParseException {
 		this.setIsFuzzy(InputGenes.isFuzzy(geneList));
 		if (validate) // Check if input list is valid
 			if (isFuzzy)
@@ -82,28 +81,27 @@ public class DbSilentlySavedList implements Serializable {
 			else
 				InputGenes.validateInputGenes(geneList);
 		if (isFuzzy) {
-			HashSet<DbSilentlySavedListGenes> listGenes = parseFuzzyGeneList(geneList, hbSession);
+			HashSet<DbSilentlySavedListGenes> listGenes = parseFuzzyGeneList(geneList);
 			setSilentGenes(listGenes);
 			normalizeFuzzyList();
 		} else {
 			HashSet<DbSilentlySavedListGenes> listGenes = new HashSet<DbSilentlySavedListGenes>();
 			for (String geneName : geneList){
-				DbGene gene = (DbGene) hbSession.createCriteria(DbGene.class).add(Restrictions.eq("name", geneName.trim())).uniqueResult();
-				if(gene==null)
-					gene = new DbGene(geneName.trim());
-				listGenes.add(new DbSilentlySavedListGenes(gene, this));
+				DbGene gene = GeneralDAO.getGene(geneName);
+				if(gene!=null)
+					listGenes.add(new DbSilentlySavedListGenes(gene, this));
 			}
 			setSilentGenes(listGenes);
 		}
 	}
 
-	private HashSet<DbSilentlySavedListGenes> parseFuzzyGeneList(Collection<String> geneList, Session hbSession) {
+	private HashSet<DbSilentlySavedListGenes> parseFuzzyGeneList(Collection<String> geneList) {
 		String[] split;
 		HashSet<DbSilentlySavedListGenes> listGenes = new HashSet<DbSilentlySavedListGenes>();
 		for (String geneName : geneList) {
 			split = geneName.split(",");
 			try {
-				DbGene gene = (DbGene) hbSession.createCriteria(DbGene.class).add(Restrictions.eq("name", split[0].trim())).uniqueResult();
+				DbGene gene = GeneralDAO.getGene(split[0]);
 				if(gene==null)
 					gene = new DbGene(split[0].trim());
 				listGenes.add(new DbSilentlySavedListGenes(gene, this, Double.parseDouble(split[1])));
