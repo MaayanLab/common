@@ -55,29 +55,19 @@ public class GeneralDAO {
 	@SuppressWarnings("unchecked")
 	public static List<DbLibraryCategory> getActiveCategories() {
 		List<DbLibraryCategory> categories = null;
-		try {
-			HibernateUtil.beginTransaction();
-			categories = HibernateUtil.getCurrentSession().createQuery("from DbLibraryCategory").list();
+		categories = HibernateUtil.getCurrentSession().createQuery("from DbLibraryCategory").list();
 
-			for (DbLibraryCategory category : categories) {
+		for (DbLibraryCategory category : categories) {
 
-				Collections.sort(category.getDbGeneSetLibraries(), new LibraryComparator());
-				ArrayList<DbGeneSetLibrary> removeLibs = new ArrayList<DbGeneSetLibrary>();
-				for (DbGeneSetLibrary library : category.getDbGeneSetLibraries()) {
-					if (!library.getIsActive())
-						removeLibs.add(library);
-				}
-				category.removeAllLibraries(removeLibs);
+			Collections.sort(category.getDbGeneSetLibraries(), new LibraryComparator());
+			ArrayList<DbGeneSetLibrary> removeLibs = new ArrayList<DbGeneSetLibrary>();
+			for (DbGeneSetLibrary library : category.getDbGeneSetLibraries()) {
+				if (!library.getIsActive())
+					removeLibs.add(library);
 			}
-			
-			HibernateUtil.commitTransaction();
-
-		} catch (Exception e) {
-			HibernateUtil.rollbackTransaction();
-			e.printStackTrace();
-		} finally {
-			HibernateUtil.close();
+			category.removeAllLibraries(removeLibs);
 		}
+
 		return categories;
 	}
 
@@ -108,34 +98,31 @@ public class GeneralDAO {
 	}
 
 	public static int getCounter(String counterName) {
-		
-		HibernateUtil.beginTransaction();
+
 		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count FROM enrichr.counters where name = :counter").setParameter("counter", counterName);
 		List<?> data = query.list();
 
 		Integer counterValue = (Integer) data.get(0);
-		HibernateUtil.commitTransaction();
-		HibernateUtil.close();
 
 		return counterValue.intValue();
 	}
-	
+
 	public static int incrementCounter(String counterName) {
-		
+
 		Query query = HibernateUtil.getCurrentSession().createSQLQuery("CALL enrichr.IncrementCounter(:counter)").setParameter("counter", counterName);
-		List<?> data  = query.list();
-		
+		List<?> data = query.list();
+
 		BigInteger counterValue = (BigInteger) data.get(0);
-		
+
 		return counterValue.intValue();
 	}
-	
+
 	public static List<DbLibraryStatistics> getLibraryStatistics() {
 		List<DbLibraryStatistics> stats = HibernateUtil.getCurrentSession().getNamedQuery("getDatasetStatistics").list();
 		return stats;
 	}
-	
-	public static HashMap<String, ArrayList<String>> getlibrariesAndTermsContaining(String gene){
+
+	public static HashMap<String, ArrayList<String>> getlibrariesAndTermsContaining(String gene) {
 		Criteria criteria = HibernateUtil.getCurrentSession().createCriteria(DbTerm.class);
 		criteria.createAlias("dbTermGenes", "termGenes");
 		criteria.createAlias("termGenes.dbGene", "genes");
@@ -148,16 +135,16 @@ public class GeneralDAO {
 				libraries.put(t.getDbGeneSetLibrary().getLibraryName(), new ArrayList<String>());
 			libraries.get(t.getDbGeneSetLibrary().getLibraryName()).add(t.getName());
 		}
-		
+
 		return libraries;
 	}
-	
+
 	public static DbTerm getTerm(String libraryName, String termName) {
 		DbTerm term = (DbTerm) HibernateUtil.getCurrentSession().createCriteria(DbTerm.class).createAlias("dbGeneSetLibrary", "library").add(Restrictions.eq("library.libraryName", libraryName))
 				.add(Restrictions.eq("name", termName)).uniqueResult();
 		return term;
 	}
-	
+
 	public static DbLibraryCategory getCategory(String categoryName) {
 		DbLibraryCategory category = (DbLibraryCategory) HibernateUtil.getCurrentSession().createCriteria(DbLibraryCategory.class).add(Restrictions.eq("name", categoryName)).uniqueResult();
 		return category;
