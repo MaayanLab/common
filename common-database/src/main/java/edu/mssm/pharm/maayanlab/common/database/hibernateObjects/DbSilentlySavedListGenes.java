@@ -33,7 +33,7 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
     @SecondaryTable(name="silentlySavedGeneWeights", pkJoinColumns={
         @PrimaryKeyJoinColumn(name="listGeneId", referencedColumnName="listGeneId") })
 })
-public class DbSilentlySavedListGenes implements Serializable, Gene {
+public class DbSilentlySavedListGenes extends Gene implements Serializable {
 
 	private static final long serialVersionUID = 8287127875319016100L;
 	private int listGeneId;
@@ -100,19 +100,9 @@ public class DbSilentlySavedListGenes implements Serializable, Gene {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return (obj instanceof DbSilentlySavedListGenes)&&((DbSilentlySavedListGenes) obj).getGene().equals(this.getGene())&&
-				((DbSilentlySavedListGenes) obj).getSilentlySavedList().equals(this.getSilentlySavedList());
-	}
-
-	@Override
 	@Transient
 	public String getName() {
 		return dbGene.getName();
 	}
 
-	@Override
-	public boolean equals(Gene other) {
-		return getGene().equals(other);
-	}
 }

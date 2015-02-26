@@ -19,7 +19,7 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "genes", catalog = "enrichr")
-public class DbGene implements Serializable, Gene {
+public class DbGene extends Gene implements Serializable {
 
 	private static final long serialVersionUID = -8357672983491020270L;
 	private int geneId;
@@ -48,6 +48,7 @@ public class DbGene implements Serializable, Gene {
 		this.geneId = geneId;
 	}
 
+	@Override
 	@Column(name = "name", nullable = false, unique = true, length = 100)
 	public String getName() {
 		return name;
@@ -56,20 +57,11 @@ public class DbGene implements Serializable, Gene {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		return (obj instanceof DbGene)&&((DbGene) obj).getName().equals(this.getName());
-	}
 
 	@Override
 	@Transient
 	public Double getWeight() {
 		return 1.0;
 	}
-
-	@Override
-	public boolean equals(Gene other) {
-		return other.getName().equals(name);
-	}
+	
 }

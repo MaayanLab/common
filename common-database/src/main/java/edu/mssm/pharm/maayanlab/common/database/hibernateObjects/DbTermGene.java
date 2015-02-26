@@ -32,7 +32,7 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
     @SecondaryTable(name="termGeneWeight", pkJoinColumns={
         @PrimaryKeyJoinColumn(name="termGeneId", referencedColumnName="termGeneId") })
 })
-public class DbTermGene implements Serializable, Gene{
+public class DbTermGene extends Gene implements Serializable{
 
 	private static final long serialVersionUID = 4207016932083532101L;
 	
@@ -90,6 +90,7 @@ public class DbTermGene implements Serializable, Gene{
 		this.weight = weight;
 	}
 	
+	@Override
 	@Transient
 	public String getName() {
 		if(dbGene != null)
@@ -110,10 +111,6 @@ public class DbTermGene implements Serializable, Gene{
 
 	public void setDbGene(DbGene gene) {
 		this.dbGene = gene;
-	}
+	}	
 
-	@Override
-	public boolean equals(Gene other) {
-		return dbGene.equals(other);
-	}
 }

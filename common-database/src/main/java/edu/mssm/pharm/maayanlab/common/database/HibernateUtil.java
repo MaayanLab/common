@@ -6,8 +6,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSilentlySavedList;
-
 public class HibernateUtil {
 	private static final SessionFactory sessionFactory;
 	
