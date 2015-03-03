@@ -99,7 +99,7 @@ public class DbTerm implements Serializable {
 	@OneToMany(mappedBy = "dbTerm")
 	@LazyCollection(LazyCollectionOption.EXTRA)
 	@Cascade({ CascadeType.ALL })
-	@BatchSize(size=500)
+	@BatchSize(size=10)
 	public Set<DbTermGene> getDbTermGenes() {
 		return dbTermGenes;
 	}

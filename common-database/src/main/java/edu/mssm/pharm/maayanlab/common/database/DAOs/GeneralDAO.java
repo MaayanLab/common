@@ -1,12 +1,13 @@
 package edu.mssm.pharm.maayanlab.common.database.DAOs;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -21,6 +22,7 @@ import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryCatego
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryStatistics;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbList;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbListGenes;
+import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbListLibrary;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbOldList;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSharedList;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbTerm;
@@ -153,7 +155,8 @@ public class GeneralDAO {
 		return category;
 	}
 
-	public static DbList addDbList(Set<DbListGenes> listGenes) {
+	@SuppressWarnings("unchecked")
+	public static DbList addDbList(Collection<DbListGenes> listGenes) {
 		int hash = DbList.createHash(listGenes);
 		String stringified = DbList.stringify(listGenes);
 		List<DbList> lists = (List<DbList>) HibernateUtil.getCurrentSession().createCriteria(DbList.class).add(Restrictions.eq("hash", hash)).list();
@@ -168,5 +171,17 @@ public class GeneralDAO {
 		returnList.setDbListGenes(listGenes);
 		HibernateUtil.saveOrUpdate(returnList);
 		return returnList;
+	}
+	
+	public static void saveListLibrary(DbUserList userList, String libraryName) throws IOException {
+		if (userList != null) {
+			DbGeneSetLibrary library = getGeneSetLibrary(libraryName);
+
+			DbListLibrary listLibrary = new DbListLibrary(userList, library);
+
+			userList.addListLibrary(listLibrary);
+
+			HibernateUtil.merge(userList);
+		}
 	}
 }

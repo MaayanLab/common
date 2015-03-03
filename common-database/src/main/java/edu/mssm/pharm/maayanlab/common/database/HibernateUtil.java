@@ -9,6 +9,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUserList;
+
 public class HibernateUtil {
 	private static final SessionFactory sessionFactory;
 	
@@ -73,5 +75,13 @@ public class HibernateUtil {
 
 	public static void flush() {
 		getCurrentSession().flush();		
+	}
+
+	public static void clear() {
+		getCurrentSession().clear();
+	}
+
+	public static void evict(Object o) {
+		getCurrentSession().evict(o);
 	}
 }

@@ -2,6 +2,7 @@ package edu.mssm.pharm.maayanlab.common.database.hibernateObjects;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
@@ -64,49 +66,60 @@ public class DbList implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "dbList")
+	@BatchSize(size = 10)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListGenes> getDbListGenes() {
 		return dbListGenes;
 	}
 
-	public void setDbListGenes(Set<DbListGenes> dbListGenes) {
-		this.dbListGenes = dbListGenes;
+	public void setDbListGenes(Collection<DbListGenes> listGenes) {
+		this.dbListGenes = new HashSet<DbListGenes>(listGenes);
 		createAndSetHash();
 	}
 
 	@Override
 	public String toString() {
+		return stringify(getDbListGenes());
+	}
+
+	public void addUserList(DbUserList userList) {
+		if (dbUserLists == null)
+			dbUserLists = new HashSet<DbUserList>();
+		dbUserLists.add(userList);
+	}
+
+	public void createAndSetHash() {
+		setHash(createHash());
+	}
+
+	public int createHash() {
+		return toString().hashCode();
+	}
+
+	public static int createHash(Collection<DbListGenes> tempListGenes) {
+		return stringify(tempListGenes).hashCode();
+	}
+
+	public static String stringify(Collection<DbListGenes> tempListGenes) {
 		ArrayList<String> genes = new ArrayList<String>();
-		for(DbListGenes listGene:dbListGenes)
+		for (DbListGenes listGene : tempListGenes)
 			genes.add(listGene.toString());
 		Collections.sort(genes);
 		return String.join("\t", genes);
 	}
 
-	public void addUserList(DbUserList userList) {
-		if(dbUserLists == null)
-			dbUserLists = new HashSet<DbUserList>();
-		dbUserLists.add(userList);
-	}
-	
-	public void createAndSetHash(){
-		setHash(createHash());
-	}
-	
-	public int createHash(){
-		return toString().hashCode();
-	}
-	
-	public static int createHash(Set<DbListGenes> tempListGenes){
-		return stringify(tempListGenes).hashCode();
-	}
-	
-	public static String stringify(Set<DbListGenes> tempListGenes){
-		ArrayList<String> genes = new ArrayList<String>();
-		for(DbListGenes listGene:tempListGenes)
-			genes.add(listGene.toString());
-		Collections.sort(genes);
-		return String.join("\t", genes);
+	// Normalize degree of membership so you can use Fisher Exact Test on it
+	public void normalizeFuzzyList() {
+
+		double total = 0.0;
+		for (DbListGenes listGene : getDbListGenes()) {
+			total += listGene.getWeight();
+		}
+
+		double scale = getDbListGenes().size() / total;
+		for (DbListGenes listGene : getDbListGenes()) {
+			listGene.setWeight(listGene.getWeight() * scale);
+		}
 	}
 
 }

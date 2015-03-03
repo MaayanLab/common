@@ -154,7 +154,7 @@ public class DbGeneSetLibrary implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbGeneSetLibrary")
 	@Cascade({ CascadeType.ALL })
-	@BatchSize(size = 300)
+	@BatchSize(size = 10)
 	public List<DbTerm> getDbTerms() {
 		return dbTerms;
 	}

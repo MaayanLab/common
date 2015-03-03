@@ -23,6 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
@@ -86,16 +87,20 @@ public class DbUserList implements Serializable {
 				InputGenes.validateInputGenes(geneList);
 		if (isFuzzy) {
 			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(geneList);
-			setDbListGenes(listGenes);
-			normalizeFuzzyList();
+			DbList list = GeneralDAO.addDbList(listGenes);
+			setDbList(list);
+			list.normalizeFuzzyList();
 		} else {
 			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 			for (String geneName : geneList){
 				DbGene gene = GeneralDAO.getGene(geneName);
-				if(gene!=null)
-					listGenes.add(new DbListGenes(gene, this));
+				if(gene==null)
+					gene = new DbGene(geneName.trim());
+				
+				listGenes.add(new DbListGenes(gene, this));
 			}
-			setDbListGenes(listGenes);
+			DbList list = GeneralDAO.addDbList(listGenes);
+			setDbList(list);
 		}
 	}
 
@@ -114,20 +119,6 @@ public class DbUserList implements Serializable {
 			}
 		}
 		return listGenes;
-	}
-
-	// Normalize degree of membership so you can use Fisher Exact Test on it
-	private void normalizeFuzzyList() {
-
-		double total = 0.0;
-		for (DbListGenes listGene : getDbListGenes()) {
-			total += listGene.getWeight();
-		}
-
-		double scale = getDbListGenes().size() / total;
-		for (DbListGenes listGene : getDbListGenes()) {
-			listGene.setWeight(listGene.getWeight() * scale);
-		}
 	}
 
 	@Id
@@ -208,6 +199,7 @@ public class DbUserList implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
+	@BatchSize(size = 10)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListGenes> getDbListGenes() {
 		return dbListGenes;
