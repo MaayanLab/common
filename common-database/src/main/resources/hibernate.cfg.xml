@@ -12,12 +12,12 @@
 		<property name="hibernate.tomcatJdbcPool.testOnBorrow">true</property>
 		<property name="show_sql">false</property>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUser"/>
-		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbList"/>
+		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbOldList"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSharedList"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSharedGene"/>
-		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSilentlySavedList"/>
-		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSilentlySavedListGenes"/>
-		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSilentlySavedListLibrary"/>
+		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUserList"/>
+		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbListGenes"/>
+		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbListLibrary"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbGene"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbGeneSetLibrary"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryCategory"/>
@@ -25,5 +25,6 @@
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbTermGene"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryStatistics"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbCanvas"/>
+		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbList"/>
 	</session-factory>
 </hibernate-configuration>

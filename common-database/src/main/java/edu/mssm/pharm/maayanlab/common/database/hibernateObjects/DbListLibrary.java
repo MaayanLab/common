@@ -18,19 +18,19 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "silentlySavedListLibrary", catalog = "enrichr")
-public class DbSilentlySavedListLibrary implements Serializable {
+@Table(name = "listLibraries", catalog = "enrichr")
+public class DbListLibrary implements Serializable {
 
 	private static final long serialVersionUID = -8305956910782832376L;
 	private int listLibraryId;
-	private DbSilentlySavedList dbSilentlySavedList;
+	private DbUserList dbUserList;
 	private DbGeneSetLibrary dbGeneSetLibrary;
 	
-	public DbSilentlySavedListLibrary() {
+	public DbListLibrary() {
 	}
 
-	public DbSilentlySavedListLibrary(DbSilentlySavedList dbSilentlySavedList, DbGeneSetLibrary dbGeneSetLibrary) {
-		this.dbSilentlySavedList = dbSilentlySavedList;
+	public DbListLibrary(DbUserList dbUserList, DbGeneSetLibrary dbGeneSetLibrary) {
+		this.dbUserList = dbUserList;
 		this.dbGeneSetLibrary = dbGeneSetLibrary;
 	}
 	@Id
@@ -45,31 +45,31 @@ public class DbSilentlySavedListLibrary implements Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "listId", nullable = false)
-	public DbSilentlySavedList getSilentlySavedList() {
-		return dbSilentlySavedList;
+	@JoinColumn(name = "userListId", nullable = false)
+	public DbUserList getDbUserList() {
+		return dbUserList;
 	}
 
-	public void setSilentlySavedList(DbSilentlySavedList dbSilentlySavedList) {
-		this.dbSilentlySavedList = dbSilentlySavedList;
+	public void setDbUserList(DbUserList dbUserList) {
+		this.dbUserList = dbUserList;
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "libraryId", nullable = false)
-	public DbGeneSetLibrary getGeneSetLibrary() {
+	public DbGeneSetLibrary getDbGeneSetLibrary() {
 		return dbGeneSetLibrary;
 	}
 
-	public void setGeneSetLibrary(DbGeneSetLibrary dbGeneSetLibrary) {
+	public void setDbGeneSetLibrary(DbGeneSetLibrary dbGeneSetLibrary) {
 		this.dbGeneSetLibrary = dbGeneSetLibrary;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof DbSilentlySavedListLibrary){
-			DbSilentlySavedListLibrary other = (DbSilentlySavedListLibrary) obj;
-			return other.getSilentlySavedList().equals(this.getSilentlySavedList()) && 
-					other.getGeneSetLibrary().equals(this.getGeneSetLibrary());
+		if(obj instanceof DbListLibrary){
+			DbListLibrary other = (DbListLibrary) obj;
+			return other.getDbUserList().equals(this.getDbUserList()) && 
+					other.getDbGeneSetLibrary().equals(this.getDbGeneSetLibrary());
 		}
 		return false;
 	}

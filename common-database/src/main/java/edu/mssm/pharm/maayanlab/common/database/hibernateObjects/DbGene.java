@@ -63,5 +63,10 @@ public class DbGene extends Gene implements Serializable {
 	public Double getWeight() {
 		return 1.0;
 	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 	
 }

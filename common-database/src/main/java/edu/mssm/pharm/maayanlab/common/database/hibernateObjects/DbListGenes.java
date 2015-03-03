@@ -1,5 +1,3 @@
-
-
 package edu.mssm.pharm.maayanlab.common.database.hibernateObjects;
 
 import java.io.Serializable;
@@ -12,9 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.SecondaryTable;
-import javax.persistence.SecondaryTables;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -28,30 +23,27 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "silentlySavedListGenes", catalog = "enrichr")
-@SecondaryTables({
-    @SecondaryTable(name="silentlySavedGeneWeights", pkJoinColumns={
-        @PrimaryKeyJoinColumn(name="listGeneId", referencedColumnName="listGeneId") })
-})
-public class DbSilentlySavedListGenes extends Gene implements Serializable {
+@Table(name = "listGenes", catalog = "enrichr")
+public class DbListGenes extends Gene implements Serializable {
 
 	private static final long serialVersionUID = 8287127875319016100L;
 	private int listGeneId;
 	private DbGene dbGene;
-	private DbSilentlySavedList dbSilentlySavedList;
+	private DbUserList dbUserList;
+	private DbList dbList;
 	private Double weight;
 
-	public DbSilentlySavedListGenes() {
+	public DbListGenes() {
 	}
 
-	public DbSilentlySavedListGenes(DbGene dbGene, DbSilentlySavedList savedList) {
+	public DbListGenes(DbGene dbGene, DbUserList dbUserList) {
 		this.dbGene = dbGene;
-		this.dbSilentlySavedList = savedList;
+		this.dbUserList = dbUserList;
 	}
-	
-	public DbSilentlySavedListGenes(DbGene dbGene, DbSilentlySavedList savedList, double weight) {
+
+	public DbListGenes(DbGene dbGene, DbUserList dbUserList, double weight) {
 		this.dbGene = dbGene;
-		this.dbSilentlySavedList = savedList;
+		this.dbUserList = dbUserList;
 		setWeight(weight);
 	}
 
@@ -67,32 +59,39 @@ public class DbSilentlySavedListGenes extends Gene implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "listId", nullable = false)
-	public DbSilentlySavedList getSilentlySavedList() {
-		return this.dbSilentlySavedList;
+	@JoinColumn(name = "userListId", nullable = false)
+	public DbUserList getDbUserList() {
+		return this.dbUserList;
 	}
 
-	public void setSilentlySavedList(DbSilentlySavedList dbSilentlySavedList) {
-		this.dbSilentlySavedList = dbSilentlySavedList;
+	public void setDbUserList(DbUserList dbUserList) {
+		this.dbUserList = dbUserList;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "listId")
+	public DbList getDbList() {
+		return dbList;
+	}
+
+	public void setDbList(DbList dbList) {
+		this.dbList = dbList;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "geneId", nullable = false)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public DbGene getGene() {
+	@Cascade({ CascadeType.SAVE_UPDATE })
+	public DbGene getDbGene() {
 		return dbGene;
 	}
 
-	public void setGene(DbGene dbGene) {
+	public void setDbGene(DbGene dbGene) {
 		this.dbGene = dbGene;
 	}
 
-	@Column(name = "weight", table = "silentlySavedGeneWeights")
+	@Column(name = "weight")
 	public Double getWeight() {
-		if(weight == null)
-			return 1.0;
-		else
-			return weight;
+		return weight;
 	}
 
 	public void setWeight(Double weight) {
@@ -103,6 +102,11 @@ public class DbSilentlySavedListGenes extends Gene implements Serializable {
 	@Transient
 	public String getName() {
 		return dbGene.getName();
+	}
+
+	@Override
+	public String toString() {
+		return dbGene.toString() + " " + getWeight();
 	}
 
 }

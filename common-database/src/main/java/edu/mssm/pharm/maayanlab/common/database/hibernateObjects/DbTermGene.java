@@ -10,9 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.SecondaryTable;
-import javax.persistence.SecondaryTables;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -20,7 +17,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.id.IdentityGenerator.GetGeneratedKeysDelegate;
 
 import edu.mssm.pharm.maayanlab.common.database.Gene;
 
@@ -28,10 +24,6 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "termGenes", catalog = "enrichr")
-@SecondaryTables({
-    @SecondaryTable(name="termGeneWeight", pkJoinColumns={
-        @PrimaryKeyJoinColumn(name="termGeneId", referencedColumnName="termGeneId") })
-})
 public class DbTermGene extends Gene implements Serializable{
 
 	private static final long serialVersionUID = 4207016932083532101L;
@@ -79,12 +71,9 @@ public class DbTermGene extends Gene implements Serializable{
 		this.dbTerm = dbTerm;
 	}
 	
-	@Column(name = "weight", table = "termGeneWeight")
+	@Column(name = "weight")
 	public Double getWeight() {
-		if(weight==null)
-			return 1.0;
-		else
-			return weight;
+		return weight;
 	}
 	public void setWeight(Double weight) {
 		this.weight = weight;

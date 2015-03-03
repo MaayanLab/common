@@ -1,111 +1,112 @@
-/**
- * Model for storing lists
- * 
- * @author		Edward Y. Chen
- * @since		02/08/2013 
- */
-
 package edu.mssm.pharm.maayanlab.common.database.hibernateObjects;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @DynamicInsert
-// Don't need to include all fields in insert, don't know why not on by default
 @DynamicUpdate
-// Don't need to update all fields in update, don't know why not on by default
 @Table(name = "lists", catalog = "enrichr")
 public class DbList implements Serializable {
 
-	private static final long serialVersionUID = -1387864947273228907L;
+	private static final long serialVersionUID = -5336418115229427957L;
 
-	private int listid;
-	private DbUser dbUser;
-	private String description;
-	private String passkey;
-	private Date created;
+	private long listId;
+	private int hash;
 
-	public DbList() {
-	}
-
-	public DbList(int listid) {
-		this.listid = listid;
-	}
-
-	public DbList(int listid, DbUser dbUser, String description) {
-		this(listid, dbUser, description, null);
-	}
-
-	public DbList(int listid, DbUser dbUser, String description, String passkey) {
-		this.listid = listid;
-		this.dbUser = dbUser;
-		this.description = description;
-		this.passkey = passkey;
-	}
+	private Set<DbUserList> dbUserLists;
+	private Set<DbListGenes> dbListGenes;
 
 	@Id
-	@Column(name = "listid", unique = true, nullable = false)
-	public int getListid() {
-		return this.listid;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "listId", unique = true, nullable = false)
+	public long getListId() {
+		return listId;
 	}
 
-	public void setListid(int listid) {
-		this.listid = listid;
+	public void setListId(long listId) {
+		this.listId = listId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ownerid")
-	public DbUser getUser() {
-		return this.dbUser;
+	@Column(name = "hash")
+	public int getHash() {
+		return hash;
 	}
 
-	public void setUser(DbUser dbUser) {
-		this.dbUser = dbUser;
+	public void setHash(int hash) {
+		this.hash = hash;
 	}
 
-	@Column(name = "description", length = 200)
-	public String getDescription() {
-		if(this.description!=null)
-			return this.description;
-		else
-			return "";
+	@OneToMany(mappedBy = "dbList")
+	@Cascade({ CascadeType.ALL })
+	public Set<DbUserList> getDbUserLists() {
+		return dbUserLists;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDbUserLists(Set<DbUserList> dbUserLists) {
+		this.dbUserLists = dbUserLists;
 	}
 
-	@Column(name = "passkey", length = 16)
-	public String getPasskey() {
-		return this.passkey;
+	@OneToMany(mappedBy = "dbList")
+	@Cascade({ CascadeType.ALL })
+	public Set<DbListGenes> getDbListGenes() {
+		return dbListGenes;
 	}
 
-	public void setPasskey(String passkey) {
-		this.passkey = passkey;
+	public void setDbListGenes(Set<DbListGenes> dbListGenes) {
+		this.dbListGenes = dbListGenes;
+		createAndSetHash();
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created", nullable = false, length = 19)
-	public Date getCreated() {
-		return this.created;
+	@Override
+	public String toString() {
+		ArrayList<String> genes = new ArrayList<String>();
+		for(DbListGenes listGene:dbListGenes)
+			genes.add(listGene.toString());
+		Collections.sort(genes);
+		return String.join("\t", genes);
 	}
 
-	// Shouldn't be used because it uses default timestamp by db
-	public void setCreated(Date created) {
-		this.created = created;
+	public void addUserList(DbUserList userList) {
+		if(dbUserLists == null)
+			dbUserLists = new HashSet<DbUserList>();
+		dbUserLists.add(userList);
 	}
+	
+	public void createAndSetHash(){
+		setHash(createHash());
+	}
+	
+	public int createHash(){
+		return toString().hashCode();
+	}
+	
+	public static int createHash(Set<DbListGenes> tempListGenes){
+		return stringify(tempListGenes).hashCode();
+	}
+	
+	public static String stringify(Set<DbListGenes> tempListGenes){
+		ArrayList<String> genes = new ArrayList<String>();
+		for(DbListGenes listGene:tempListGenes)
+			genes.add(listGene.toString());
+		Collections.sort(genes);
+		return String.join("\t", genes);
+	}
+
 }

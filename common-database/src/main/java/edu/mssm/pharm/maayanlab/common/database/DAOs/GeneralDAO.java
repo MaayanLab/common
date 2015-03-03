@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -19,10 +20,12 @@ import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbGeneSetLibrar
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryCategory;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryStatistics;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbList;
+import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbListGenes;
+import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbOldList;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSharedList;
-import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbSilentlySavedList;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbTerm;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUser;
+import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUserList;
 
 public class GeneralDAO {
 
@@ -33,7 +36,7 @@ public class GeneralDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static HashMap<DbTerm, ArrayList<Gene>> getOverlappingTermsAndGenes(DbSilentlySavedList userList, DbGeneSetLibrary geneSetLibrary) {
+	public static HashMap<DbTerm, ArrayList<Gene>> getOverlappingTermsAndGenes(DbUserList userList, DbGeneSetLibrary geneSetLibrary) {
 		HashMap<DbTerm, ArrayList<Gene>> termOverlaps = new HashMap<DbTerm, ArrayList<Gene>>();
 
 		List<Object[]> queryResults = HibernateUtil.getCurrentSession().getNamedQuery("getOverlappingTerms").setParameterList("searchList", userList.getDbGenes())
@@ -85,8 +88,8 @@ public class GeneralDAO {
 		return dbUser;
 	}
 
-	public static DbList getList(int listId) {
-		return (DbList) HibernateUtil.getCurrentSession().get(DbList.class, listId);
+	public static DbOldList getList(int listId) {
+		return (DbOldList) HibernateUtil.getCurrentSession().get(DbOldList.class, listId);
 	}
 
 	public static DbSharedList getSharedList(int sharedListId) {
@@ -148,5 +151,22 @@ public class GeneralDAO {
 	public static DbLibraryCategory getCategory(String categoryName) {
 		DbLibraryCategory category = (DbLibraryCategory) HibernateUtil.getCurrentSession().createCriteria(DbLibraryCategory.class).add(Restrictions.eq("name", categoryName)).uniqueResult();
 		return category;
+	}
+
+	public static DbList addDbList(Set<DbListGenes> listGenes) {
+		int hash = DbList.createHash(listGenes);
+		String stringified = DbList.stringify(listGenes);
+		List<DbList> lists = (List<DbList>) HibernateUtil.getCurrentSession().createCriteria(DbList.class).add(Restrictions.eq("hash", hash)).list();
+
+		for (DbList list : lists) {
+			if (stringified.equals(list.toString())) {
+				return list;
+			}
+		}
+
+		DbList returnList = new DbList();
+		returnList.setDbListGenes(listGenes);
+		HibernateUtil.saveOrUpdate(returnList);
+		return returnList;
 	}
 }

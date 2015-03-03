@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,40 +34,42 @@ import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "silentlySavedLists", catalog = "enrichr")
-public class DbSilentlySavedList implements Serializable {
+@Table(name = "userLists", catalog = "enrichr")
+public class DbUserList implements Serializable {
 
 
 	private static final long serialVersionUID = -1064570202349856526L;
-	private int listid;
+	private int userListid;
+	private DbUser dbUser;
+	private DbList dbList;
 	private String description;
 	private String inputMethod;
 	private int ipAddress;
 	private Date timestamp;
 	private boolean isFuzzy;
-	private Set<DbSilentlySavedListGenes> silentGenes;
-	private Set<DbSilentlySavedListLibrary> dbSilentlySavedListLibrary = new HashSet<DbSilentlySavedListLibrary>();
+	private Set<DbListGenes> dbListGenes;
+	private Set<DbListLibrary> dbListLibrary = new HashSet<DbListLibrary>();
 
-	public DbSilentlySavedList() {
-		this.dbSilentlySavedListLibrary = new HashSet<DbSilentlySavedListLibrary>();
+	public DbUserList() {
+		this.dbListLibrary = new HashSet<DbListLibrary>();
 	}
 
-	public DbSilentlySavedList(int listid) {
-		this.listid = listid;
-		this.dbSilentlySavedListLibrary = new HashSet<DbSilentlySavedListLibrary>();
+	public DbUserList(int userListid) {
+		this.userListid = userListid;
+		this.dbListLibrary = new HashSet<DbListLibrary>();
 	}
 
-	public DbSilentlySavedList(int listid, String description) {
-		this.listid = listid;
-		this.dbSilentlySavedListLibrary = new HashSet<DbSilentlySavedListLibrary>();
+	public DbUserList(int userListid, String description) {
+		this.userListid = userListid;
+		this.dbListLibrary = new HashSet<DbListLibrary>();
 		if (!description.trim().isEmpty()) {
 			this.description = description;
 		}
 	}
 
-	public DbSilentlySavedList(int listid, String description, String inputMethod, int ipAddress) {
-		this.listid = listid;
-		this.dbSilentlySavedListLibrary = new HashSet<DbSilentlySavedListLibrary>();
+	public DbUserList(int userListid, String description, String inputMethod, int ipAddress) {
+		this.userListid = userListid;
+		this.dbListLibrary = new HashSet<DbListLibrary>();
 		if (!description.trim().isEmpty()) {
 			this.description = description;
 		}
@@ -73,7 +77,7 @@ public class DbSilentlySavedList implements Serializable {
 		this.ipAddress = ipAddress;
 	}
 	
-	public DbSilentlySavedList(Collection<String> geneList, boolean validate) throws ParseException {
+	public DbUserList(Collection<String> geneList, boolean validate) throws ParseException {
 		this.setIsFuzzy(InputGenes.isFuzzy(geneList));
 		if (validate) // Check if input list is valid
 			if (isFuzzy)
@@ -81,32 +85,32 @@ public class DbSilentlySavedList implements Serializable {
 			else
 				InputGenes.validateInputGenes(geneList);
 		if (isFuzzy) {
-			HashSet<DbSilentlySavedListGenes> listGenes = parseFuzzyGeneList(geneList);
-			setSilentGenes(listGenes);
+			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(geneList);
+			setDbListGenes(listGenes);
 			normalizeFuzzyList();
 		} else {
-			HashSet<DbSilentlySavedListGenes> listGenes = new HashSet<DbSilentlySavedListGenes>();
+			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 			for (String geneName : geneList){
 				DbGene gene = GeneralDAO.getGene(geneName);
 				if(gene!=null)
-					listGenes.add(new DbSilentlySavedListGenes(gene, this));
+					listGenes.add(new DbListGenes(gene, this));
 			}
-			setSilentGenes(listGenes);
+			setDbListGenes(listGenes);
 		}
 	}
 
-	private HashSet<DbSilentlySavedListGenes> parseFuzzyGeneList(Collection<String> geneList) {
+	private HashSet<DbListGenes> parseFuzzyGeneList(Collection<String> geneList) {
 		String[] split;
-		HashSet<DbSilentlySavedListGenes> listGenes = new HashSet<DbSilentlySavedListGenes>();
+		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 		for (String geneName : geneList) {
 			split = geneName.split(",");
 			try {
 				DbGene gene = GeneralDAO.getGene(split[0]);
 				if(gene==null)
 					gene = new DbGene(split[0].trim());
-				listGenes.add(new DbSilentlySavedListGenes(gene, this, Double.parseDouble(split[1])));
+				listGenes.add(new DbListGenes(gene, this, Double.parseDouble(split[1])));
 			} catch (NumberFormatException nfe) {
-				listGenes.add(new DbSilentlySavedListGenes(new DbGene(split[0].trim()), this));
+				listGenes.add(new DbListGenes(new DbGene(split[0].trim()), this));
 			}
 		}
 		return listGenes;
@@ -116,25 +120,45 @@ public class DbSilentlySavedList implements Serializable {
 	private void normalizeFuzzyList() {
 
 		double total = 0.0;
-		for (DbSilentlySavedListGenes listGene : getSilentGenes()) {
+		for (DbListGenes listGene : getDbListGenes()) {
 			total += listGene.getWeight();
 		}
 
-		double scale = getSilentGenes().size() / total;
-		for (DbSilentlySavedListGenes listGene : getSilentGenes()) {
+		double scale = getDbListGenes().size() / total;
+		for (DbListGenes listGene : getDbListGenes()) {
 			listGene.setWeight(listGene.getWeight() * scale);
 		}
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "listId", unique = true, nullable = false)
-	public int getListid() {
-		return listid;
+	@Column(name = "userListId", unique = true, nullable = false)
+	public int getUserListid() {
+		return userListid;
 	}
 
-	public void setListid(int listid) {
-		this.listid = listid;
+	public void setUserListid(int userListid) {
+		this.userListid = userListid;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "userId", nullable = false)
+	public DbUser getDbUser() {
+		return dbUser;
+	}
+
+	public void setDbUser(DbUser dbUser) {
+		this.dbUser = dbUser;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "listId", nullable = false)
+	public DbList getDbList() {
+		return dbList;
+	}
+
+	public void setDbList(DbList dbList) {
+		this.dbList = dbList;
 	}
 
 	@Column(name = "description", length = 100)
@@ -183,41 +207,41 @@ public class DbSilentlySavedList implements Serializable {
 		this.isFuzzy = isFuzzy;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "silentlySavedList")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
 	@Cascade({ CascadeType.ALL })
-	public Set<DbSilentlySavedListGenes> getSilentGenes() {
-		return silentGenes;
+	public Set<DbListGenes> getDbListGenes() {
+		return dbListGenes;
 	}
 
-	public void setSilentGenes(Set<DbSilentlySavedListGenes> silentGenes) {
-		this.silentGenes = silentGenes;
+	public void setDbListGenes(Set<DbListGenes> listGenes) {
+		this.dbListGenes = listGenes;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "silentlySavedList")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
 	@Cascade({ CascadeType.ALL })
-	public Set<DbSilentlySavedListLibrary> getSilentlySavedListLibrary() {
-		return dbSilentlySavedListLibrary;
+	public Set<DbListLibrary> getDbListLibrary() {
+		return dbListLibrary;
 	}
 
-	public void setSilentlySavedListLibrary(Set<DbSilentlySavedListLibrary> silentLibraries) {
-		this.dbSilentlySavedListLibrary = silentLibraries;
+	public void setDbListLibrary(Set<DbListLibrary> silentLibraries) {
+		this.dbListLibrary = silentLibraries;
 	}
 	
-	public void addListLibrary(DbSilentlySavedListLibrary listLibrary){
-		dbSilentlySavedListLibrary.add(listLibrary);
+	public void addListLibrary(DbListLibrary listLibrary){
+		dbListLibrary.add(listLibrary);
 	}
 	
 	@Transient
 	public Collection<DbGene> getDbGenes(){
 		ArrayList<DbGene> genes = new ArrayList<DbGene>();
-		for(DbSilentlySavedListGenes listGenes:silentGenes)
-			genes.add(listGenes.getGene());
+		for(DbListGenes listGenes:dbListGenes)
+			genes.add(listGenes.getDbGene());
 		return genes;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof DbSilentlySavedList)&&((DbSilentlySavedList)obj).listid==this.listid;
+		return (obj instanceof DbUserList)&&((DbUserList)obj).userListid==this.userListid;
 	}
 	
 	

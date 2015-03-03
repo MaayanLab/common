@@ -51,22 +51,23 @@ public class DbUser implements Serializable {
 	private String last;
 	private String institute;
 	private Date accessed;
-	private Set<DbList> dbLists;
+	private Set<DbOldList> dbOldLists;
+	private Set<DbUserList> dbUserLists;
 	
 	public DbUser() {
 	}
 
 	public DbUser(String email, String password) {
-		this(email, password, null, null, null, new HashSet<DbList>(0));
+		this(email, password, null, null, null, new HashSet<DbOldList>(0));
 	}
 	
 	public DbUser(String email, String password, String first, String last, String institute) {
-		this(email, password, first, last, institute, new HashSet<DbList>(0));
+		this(email, password, first, last, institute, new HashSet<DbOldList>(0));
 	}
 
-	public DbUser(String email, String password, String first, String last, String institute, Set<DbList> dbLists) {
+	public DbUser(String email, String password, String first, String last, String institute, Set<DbOldList> dbOldLists) {
 		updateUser(email, password, first, last, institute);
-		this.dbLists = dbLists;
+		this.dbOldLists = dbOldLists;
 	}
 	
 	public boolean updateUser(String email, String password, String first, String last, String institute) {
@@ -194,16 +195,26 @@ public class DbUser implements Serializable {
 		this.accessed = null;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)	// Lists can be removed and propagated here
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUser", orphanRemoval = true)	// Lists can be removed and propagated here
 	@Cascade({CascadeType.ALL})
-	public Set<DbList> getLists() {
-		return this.dbLists;
+	public Set<DbOldList> getDbOldLists() {
+		return this.dbOldLists;
 	}
 
-	public void setLists(Set<DbList> dbLists) {
-		this.dbLists = dbLists;
+	public void setDbOldLists(Set<DbOldList> dbOldLists) {
+		this.dbOldLists = dbOldLists;
 	}
 	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUser", orphanRemoval = true)	// Lists can be removed and propagated here
+	@Cascade({CascadeType.ALL})
+	public Set<DbUserList> getDbUserLists() {
+		return dbUserLists;
+	}
+
+	public void setDbUserLists(Set<DbUserList> dbUserLists) {
+		this.dbUserLists = dbUserLists;
+	}
+
 	@Override
 	public String toString() {	// For testing purposes
 		StringBuilder output = new StringBuilder();

@@ -1,5 +1,8 @@
 package edu.mssm.pharm.maayanlab.common.database;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -58,5 +61,17 @@ public class HibernateUtil {
 	
 	public static void update(Object object){
 		getCurrentSession().update(object);
+	}
+	
+	public static Object load(Class theClass, Serializable id){
+		return getCurrentSession().load(theClass, id);
+	}
+	
+	public static List getAll(Class theClass){
+		return getCurrentSession().createCriteria(theClass).list();
+	}
+
+	public static void flush() {
+		getCurrentSession().flush();		
 	}
 }
