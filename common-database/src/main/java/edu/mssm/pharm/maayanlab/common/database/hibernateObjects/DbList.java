@@ -66,7 +66,7 @@ public class DbList implements Serializable {
 		this.dbUserLists = dbUserLists;
 	}
 
-	@OneToMany(mappedBy = "dbList")
+	@OneToMany(mappedBy = "dbList", orphanRemoval = true)
 	@BatchSize(size = 10)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListGenes> getDbListGenes() {
