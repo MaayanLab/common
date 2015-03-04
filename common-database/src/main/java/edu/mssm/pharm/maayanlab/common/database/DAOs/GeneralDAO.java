@@ -170,6 +170,9 @@ public class GeneralDAO {
 
 		DbList returnList = new DbList();
 		returnList.setDbListGenes(new HashSet<DbListGenes>(listGenes));
+		for(DbListGenes listGene:listGenes)
+			listGene.setDbList(returnList);
+		returnList.setHash(hash);;
 		return returnList;
 	}
 	
