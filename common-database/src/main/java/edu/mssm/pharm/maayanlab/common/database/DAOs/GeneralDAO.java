@@ -9,11 +9,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
+import edu.mssm.pharm.maayanlab.common.bio.InputGenes;
 import edu.mssm.pharm.maayanlab.common.database.Gene;
 import edu.mssm.pharm.maayanlab.common.database.HibernateUtil;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbCanvas;
@@ -30,19 +32,39 @@ import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbTerm;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUser;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUserList;
 
+
+/**
+ * All of these methods must be run inside a hibernate session and a transaction (see {@link HibernateUtil}). No method in this class creates, closes, begins or commits a session or transaction.
+ * All objects returned by methods in this class are backed by the database.
+ * @author Matthew Jones
+ * @version %I%, %G%
+ * @see HibernateUtil
+ */
 public class GeneralDAO {
 
-	public static DbGeneSetLibrary getGeneSetLibrary(String backgroundType) {
-		DbGeneSetLibrary geneSetLibrary = (DbGeneSetLibrary) HibernateUtil.getCurrentSession().createCriteria(DbGeneSetLibrary.class).add(Restrictions.eq("libraryName", backgroundType))
+	
+	/**
+	 * Gets the Gene set library with name matching libraryName. If no name matches, return value is null.
+	 * @param libraryName The name of the library you want
+	 * @return A DbGeneSetLibrary object or null if no names matched.
+	 */
+	public static DbGeneSetLibrary getGeneSetLibrary(String libraryName) {
+		DbGeneSetLibrary geneSetLibrary = (DbGeneSetLibrary) HibernateUtil.getCurrentSession().createCriteria(DbGeneSetLibrary.class).add(Restrictions.eq("libraryName", libraryName))
 				.uniqueResult();
 		return geneSetLibrary;
 	}
 
+	/**
+	 * Finds the terms in a gene set library with overlapping genes and the genes that are overlapping.
+	 * @param list The list to find matches against.
+	 * @param geneSetLibrary The library to search for terms with overlaps.
+	 * @return A map where terms with overlaps are the keys and each value is a list of the genes that are overlapping for that term.
+	 */
 	@SuppressWarnings("unchecked")
-	public static HashMap<DbTerm, ArrayList<Gene>> getOverlappingTermsAndGenes(DbUserList userList, DbGeneSetLibrary geneSetLibrary) {
-		HashMap<DbTerm, ArrayList<Gene>> termOverlaps = new HashMap<DbTerm, ArrayList<Gene>>();
+	public static Map<DbTerm, List<Gene>> getOverlappingTermsAndGenes(DbList list, DbGeneSetLibrary geneSetLibrary) {
+		HashMap<DbTerm, List<Gene>> termOverlaps = new HashMap<DbTerm, List<Gene>>();
 
-		List<Object[]> queryResults = HibernateUtil.getCurrentSession().getNamedQuery("getOverlappingTerms").setParameterList("searchList", userList.getDbGenes())
+		List<Object[]> queryResults = HibernateUtil.getCurrentSession().getNamedQuery("getOverlappingTerms").setParameterList("searchList", list.getDbGenes())
 				.setParameter("library", geneSetLibrary).list();
 
 		for (Object[] row : queryResults) {
@@ -54,10 +76,23 @@ public class GeneralDAO {
 		return termOverlaps;
 	}
 
+	/**
+	 * Gets a DbGene object backed by the database. If no gene exists, one is created.
+	 * @param geneName The name of the gene.
+	 * @return A DbGene object.
+	 */
 	public static DbGene getGene(String geneName) {
-		return (DbGene) HibernateUtil.getCurrentSession().createCriteria(DbGene.class).add(Restrictions.eq("name", geneName.trim())).uniqueResult();
+		geneName = geneName.trim().toUpperCase();
+		DbGene gene = (DbGene) HibernateUtil.getCurrentSession().createCriteria(DbGene.class).add(Restrictions.eq("name", geneName)).uniqueResult();
+		if(gene==null)
+			gene = new DbGene(geneName);
+		return gene;
 	}
 
+	/**
+	 * Gets the currently active categories.
+	 * @return A list of all active categories.
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<DbLibraryCategory> getActiveCategories() {
 		List<DbLibraryCategory> categories = null;
@@ -85,24 +120,49 @@ public class GeneralDAO {
 
 	}
 
+	/**
+	 * Get a user by their email.
+	 * @param email
+	 * @return The DbUser with the given email or null if no email matched.
+	 */
 	public static DbUser getUser(String email) {
 		Criteria criteria = HibernateUtil.getCurrentSession().createCriteria(DbUser.class).add(Restrictions.eq("email", email).ignoreCase());
 		DbUser dbUser = (DbUser) criteria.uniqueResult();
 		return dbUser;
 	}
 
+	/**
+	 * Legacy method. Gets the DbOldList with the given Id.
+	 * @param listId
+	 * @return The list or null if no list matched the Id.
+	 */
 	public static DbOldList getList(int listId) {
 		return (DbOldList) HibernateUtil.getCurrentSession().get(DbOldList.class, listId);
 	}
 
+	/**
+	 * Legacy method. Gets the DbSharedList with the given Id.
+	 * @param sharedListId
+	 * @return The list or null if no list matched the Id.
+	 */
 	public static DbSharedList getSharedList(int sharedListId) {
 		return (DbSharedList) HibernateUtil.getCurrentSession().get(DbSharedList.class, sharedListId);
 	}
 
+	/**
+	 * Get the canvas for a library.
+	 * @param libraryName The name of the library
+	 * @return A DbCanvas object or null if no library matched libraryName.
+	 */
 	public static DbCanvas getCanvas(String libraryName) {
 		return (DbCanvas) HibernateUtil.getCurrentSession().getNamedQuery("getCanvas").setParameter("libraryName", libraryName).uniqueResult();
 	}
 
+	/**
+	 * Gets the value of a counter.
+	 * @param counterName The name of the counter.
+	 * @return The value of the counter.
+	 */
 	public static int getCounter(String counterName) {
 
 		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count FROM enrichr.counters where name = :counter").setParameter("counter", counterName);
@@ -113,6 +173,11 @@ public class GeneralDAO {
 		return counterValue.intValue();
 	}
 
+	/**
+	 * Increments a counter.
+	 * @param counterName The name of the counter.
+	 * @return The value after incrementing.
+	 */
 	public static int incrementCounter(String counterName) {
 
 		Query query = HibernateUtil.getCurrentSession().createSQLQuery("CALL enrichr.IncrementCounter(:counter)").setParameter("counter", counterName);
@@ -123,19 +188,28 @@ public class GeneralDAO {
 		return counterValue.intValue();
 	}
 
+	/**
+	 * Get the library statistics for all libraries.
+	 * @return A list of DbLibraryStatistics objects.
+	 */
 	public static List<DbLibraryStatistics> getLibraryStatistics() {
 		List<DbLibraryStatistics> stats = HibernateUtil.getCurrentSession().getNamedQuery("getDatasetStatistics").list();
 		return stats;
 	}
 
-	public static HashMap<String, ArrayList<String>> getlibrariesAndTermsContaining(String gene) {
+	/**
+	 * Gets all terms containing a gene and organises them by library.
+	 * @param gene The name of the gene you want to look for.
+	 * @return A map where the keys are library names and the values are lists containing the term names that contain the gene.
+	 */
+	public static Map<String, List<String>> getlibrariesAndTermsContaining(String gene) {
 		Criteria criteria = HibernateUtil.getCurrentSession().createCriteria(DbTerm.class);
 		criteria.createAlias("dbTermGenes", "termGenes");
 		criteria.createAlias("termGenes.dbGene", "genes");
 		criteria.add(Restrictions.eq("genes.name", gene));
 		List<DbTerm> terms = criteria.list();
 
-		HashMap<String, ArrayList<String>> libraries = new HashMap<String, ArrayList<String>>();
+		Map<String, List<String>> libraries = new HashMap<String, List<String>>();
 		for (DbTerm t : terms) {
 			if (!libraries.containsKey(t.getDbGeneSetLibrary().getLibraryName()))
 				libraries.put(t.getDbGeneSetLibrary().getLibraryName(), new ArrayList<String>());
@@ -145,19 +219,35 @@ public class GeneralDAO {
 		return libraries;
 	}
 
+	/**
+	 * Gets the term with the given name in the given library.
+	 * @param libraryName
+	 * @param termName
+	 * @return
+	 */
 	public static DbTerm getTerm(String libraryName, String termName) {
 		DbTerm term = (DbTerm) HibernateUtil.getCurrentSession().createCriteria(DbTerm.class).createAlias("dbGeneSetLibrary", "library").add(Restrictions.eq("library.libraryName", libraryName))
 				.add(Restrictions.eq("name", termName)).uniqueResult();
 		return term;
 	}
 
+	/**
+	 * Gets the DbLibraryCategory object with the given name. If no entry exists in the database, null is returned.
+	 * @param categoryName
+	 * @return The DbLibraryCategory or null if no category matched.
+	 */
 	public static DbLibraryCategory getCategory(String categoryName) {
 		DbLibraryCategory category = (DbLibraryCategory) HibernateUtil.getCurrentSession().createCriteria(DbLibraryCategory.class).add(Restrictions.eq("name", categoryName)).uniqueResult();
 		return category;
 	}
 
+	/**
+	 * Gets the DbList containing the genes in listGenes. If no list matches, one is created.
+	 * @param listGenes
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	public static DbList getDbList(Collection<DbListGenes> listGenes) {
+	public static DbList getDbListFromListGenes(Collection<DbListGenes> listGenes) {
 		int hash = DbList.createHash(listGenes);
 		String stringified = DbList.stringify(listGenes);
 		List<DbList> lists = (List<DbList>) HibernateUtil.getCurrentSession().createCriteria(DbList.class).add(Restrictions.eq("hash", hash)).list();
@@ -174,6 +264,46 @@ public class GeneralDAO {
 			listGene.setDbList(returnList);
 		returnList.setHash(hash);;
 		return returnList;
+	}
+	
+	public static DbList getDbListFromGenes(Collection<DbGene> genes){
+		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
+		for (DbGene gene : genes){
+			listGenes.add(new DbListGenes(gene));
+		}
+		return getDbListFromListGenes(listGenes);
+	}
+	
+	public static DbList getDbListFromStrings(Collection<String> genes){
+		DbList list;
+		if (InputGenes.isFuzzy(genes)) {
+			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(genes);
+			list = getDbListFromListGenes(listGenes);
+			list.normalizeFuzzyList();
+		} else {
+			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
+			for (String geneName : genes){
+				DbGene gene = getGene(geneName);
+				listGenes.add(new DbListGenes(gene));
+			}
+			list = getDbListFromListGenes(listGenes);
+		}
+		return list;
+	}
+	
+	private static HashSet<DbListGenes> parseFuzzyGeneList(Collection<String> geneList) {
+		String[] split;
+		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
+		for (String geneName : geneList) {
+			split = geneName.split(",");
+			DbGene gene = getGene(split[0]);
+			try {
+				listGenes.add(new DbListGenes(gene, Double.parseDouble(split[1])));
+			} catch (NumberFormatException nfe) {
+				listGenes.add(new DbListGenes(gene));
+			}
+		}
+		return listGenes;
 	}
 	
 	public static void saveListLibrary(DbUserList userList, String libraryName) throws IOException {

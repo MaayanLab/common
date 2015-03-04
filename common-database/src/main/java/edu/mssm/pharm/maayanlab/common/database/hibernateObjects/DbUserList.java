@@ -1,4 +1,3 @@
-
 package edu.mssm.pharm.maayanlab.common.database.hibernateObjects;
 
 import java.io.Serializable;
@@ -37,7 +36,6 @@ import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 @DynamicUpdate
 @Table(name = "userLists", catalog = "enrichr")
 public class DbUserList implements Serializable {
-
 
 	private static final long serialVersionUID = -1064570202349856526L;
 	private int userListid;
@@ -79,7 +77,7 @@ public class DbUserList implements Serializable {
 		this.inputMethod = inputMethod;
 		this.ipAddress = ipAddress;
 	}
-	
+
 	public DbUserList(Collection<String> geneList, boolean validate) throws ParseException {
 		this.setIsFuzzy(InputGenes.isFuzzy(geneList));
 		if (validate) // Check if input list is valid
@@ -87,42 +85,10 @@ public class DbUserList implements Serializable {
 				InputGenes.validateFuzzyInputGenes(geneList);
 			else
 				InputGenes.validateInputGenes(geneList);
-		if (isFuzzy) {
-			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(geneList);
-			DbList list = GeneralDAO.getDbList(listGenes);
-			setDbList(list);
-			list.normalizeFuzzyList();
-			list.addUserList(this);
-		} else {
-			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
-			for (String geneName : geneList){
-				DbGene gene = GeneralDAO.getGene(geneName);
-				if(gene==null)
-					gene = new DbGene(geneName.trim());
-				
-				listGenes.add(new DbListGenes(gene));
-			}
-			DbList list = GeneralDAO.getDbList(listGenes);
-			setDbList(list);
-			list.addUserList(this);
-		}
-	}
 
-	private HashSet<DbListGenes> parseFuzzyGeneList(Collection<String> geneList) {
-		String[] split;
-		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
-		for (String geneName : geneList) {
-			split = geneName.split(",");
-			try {
-				DbGene gene = GeneralDAO.getGene(split[0]);
-				if(gene==null)
-					gene = new DbGene(split[0].trim());
-				listGenes.add(new DbListGenes(gene, Double.parseDouble(split[1])));
-			} catch (NumberFormatException nfe) {
-				listGenes.add(new DbListGenes(new DbGene(split[0].trim())));
-			}
-		}
-		return listGenes;
+		DbList list = GeneralDAO.getDbListFromStrings(geneList);
+		setDbList(list);
+		list.addUserList(this);
 	}
 
 	@Id
@@ -171,7 +137,7 @@ public class DbUserList implements Serializable {
 		return inputMethod;
 	}
 
-	public void setInputMethod(String inputMethod){
+	public void setInputMethod(String inputMethod) {
 		this.inputMethod = inputMethod;
 	}
 
@@ -193,7 +159,7 @@ public class DbUserList implements Serializable {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-	
+
 	@Column(name = "isFuzzy")
 	public boolean getIsFuzzy() {
 		return isFuzzy;
@@ -211,7 +177,7 @@ public class DbUserList implements Serializable {
 	public void setIsSaved(boolean isSaved) {
 		this.isSaved = isSaved;
 	}
-	
+
 	@Column(name = "shortId")
 	public String getShortId() {
 		return shortId;
@@ -220,18 +186,18 @@ public class DbUserList implements Serializable {
 	public void setShortId(String shortId) {
 		this.shortId = shortId;
 	}
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
-	@BatchSize(size = 10)
-	@Cascade({ CascadeType.ALL })
-	public Set<DbListGenes> getDbListGenes() {
-		return dbListGenes;
-	}
 
-	public void setDbListGenes(Set<DbListGenes> listGenes) {
-		this.dbListGenes = listGenes;
-	}
+	 @OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
+	 @BatchSize(size = 10)
+	 @Cascade({ CascadeType.ALL })
+	 public Set<DbListGenes> getDbListGenes() {
+	 return dbListGenes;
+	 }
 	
+	 public void setDbListGenes(Set<DbListGenes> listGenes) {
+	 this.dbListGenes = listGenes;
+	 }
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListLibrary> getDbListLibrary() {
@@ -241,23 +207,22 @@ public class DbUserList implements Serializable {
 	public void setDbListLibrary(Set<DbListLibrary> silentLibraries) {
 		this.dbListLibrary = silentLibraries;
 	}
-	
-	public void addListLibrary(DbListLibrary listLibrary){
+
+	public void addListLibrary(DbListLibrary listLibrary) {
 		dbListLibrary.add(listLibrary);
 	}
-	
+
 	@Transient
-	public Collection<DbGene> getDbGenes(){
+	public Collection<DbGene> getDbGenes() {
 		ArrayList<DbGene> genes = new ArrayList<DbGene>();
-		for(DbListGenes listGenes:dbList.getDbListGenes())
+		for (DbListGenes listGenes : dbList.getDbListGenes())
 			genes.add(listGenes.getDbGene());
 		return genes;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof DbUserList)&&((DbUserList)obj).userListid==this.userListid;
+		return (obj instanceof DbUserList) && ((DbUserList) obj).userListid == this.userListid;
 	}
-	
-	
+
 }

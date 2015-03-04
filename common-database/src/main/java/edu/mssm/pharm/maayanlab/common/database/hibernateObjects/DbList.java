@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
@@ -120,6 +121,14 @@ public class DbList implements Serializable {
 		for (DbListGenes listGene : getDbListGenes()) {
 			listGene.setWeight(listGene.getWeight() * scale);
 		}
+	}
+
+	@Transient
+	public Collection<DbGene> getDbGenes(){
+		ArrayList<DbGene> genes = new ArrayList<DbGene>();
+		for(DbListGenes listGenes:getDbListGenes())
+			genes.add(listGenes.getDbGene());
+		return genes;
 	}
 
 }

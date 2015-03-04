@@ -9,8 +9,10 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUserList;
-
+/**
+ * @author Matthew Jones
+ * @version %I%, %G%
+ */
 public class HibernateUtil {
 	private static final SessionFactory sessionFactory;
 	
