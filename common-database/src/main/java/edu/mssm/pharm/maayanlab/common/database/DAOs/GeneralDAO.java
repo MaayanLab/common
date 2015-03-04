@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -156,7 +157,7 @@ public class GeneralDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static DbList addDbList(Collection<DbListGenes> listGenes) {
+	public static DbList getDbList(Collection<DbListGenes> listGenes) {
 		int hash = DbList.createHash(listGenes);
 		String stringified = DbList.stringify(listGenes);
 		List<DbList> lists = (List<DbList>) HibernateUtil.getCurrentSession().createCriteria(DbList.class).add(Restrictions.eq("hash", hash)).list();
@@ -168,8 +169,7 @@ public class GeneralDAO {
 		}
 
 		DbList returnList = new DbList();
-		returnList.setDbListGenes(listGenes);
-		HibernateUtil.saveOrUpdate(returnList);
+		returnList.setDbListGenes(new HashSet<DbListGenes>(listGenes));
 		return returnList;
 	}
 	
@@ -183,5 +183,10 @@ public class GeneralDAO {
 
 			HibernateUtil.merge(userList);
 		}
+	}
+	
+	public static DbUserList getDbUserList(String shortId){
+		DbUserList userList = (DbUserList) HibernateUtil.getCurrentSession().createCriteria(DbUserList.class).add(Restrictions.eq("shortId", shortId)).uniqueResult();
+		return userList;
 	}
 }

@@ -31,19 +31,17 @@ public class DbListGenes extends Gene implements Serializable {
 	private DbGene dbGene;
 	private DbUserList dbUserList;
 	private DbList dbList;
-	private Double weight;
+	private Double weight = 1.0;
 
 	public DbListGenes() {
 	}
 
-	public DbListGenes(DbGene dbGene, DbUserList dbUserList) {
+	public DbListGenes(DbGene dbGene) {
 		this.dbGene = dbGene;
-		this.dbUserList = dbUserList;
 	}
 
-	public DbListGenes(DbGene dbGene, DbUserList dbUserList, double weight) {
+	public DbListGenes(DbGene dbGene, double weight) {
 		this.dbGene = dbGene;
-		this.dbUserList = dbUserList;
 		setWeight(weight);
 	}
 
@@ -59,7 +57,7 @@ public class DbListGenes extends Gene implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "userListId", nullable = false)
+	@JoinColumn(name = "userListId")
 	public DbUserList getDbUserList() {
 		return this.dbUserList;
 	}
@@ -69,7 +67,7 @@ public class DbListGenes extends Gene implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "listId")
+	@JoinColumn(name = "listId", nullable = false)
 	public DbList getDbList() {
 		return dbList;
 	}

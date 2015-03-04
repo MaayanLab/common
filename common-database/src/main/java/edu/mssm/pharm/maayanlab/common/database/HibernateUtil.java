@@ -54,7 +54,8 @@ public class HibernateUtil {
 	}
 	
 	public static void rollbackTransaction(){
-		getCurrentSession().getTransaction().rollback();
+		if(getCurrentSession().getTransaction().isActive())
+			getCurrentSession().getTransaction().rollback();
 	}
 	
 	public static void saveOrUpdate(Object object) {

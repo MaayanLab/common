@@ -48,6 +48,8 @@ public class DbUserList implements Serializable {
 	private int ipAddress;
 	private Date timestamp;
 	private boolean isFuzzy;
+	private boolean isSaved;
+	private String shortId;
 	private Set<DbListGenes> dbListGenes;
 	private Set<DbListLibrary> dbListLibrary = new HashSet<DbListLibrary>();
 
@@ -87,9 +89,10 @@ public class DbUserList implements Serializable {
 				InputGenes.validateInputGenes(geneList);
 		if (isFuzzy) {
 			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(geneList);
-			DbList list = GeneralDAO.addDbList(listGenes);
+			DbList list = GeneralDAO.getDbList(listGenes);
 			setDbList(list);
 			list.normalizeFuzzyList();
+			list.addUserList(this);
 		} else {
 			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 			for (String geneName : geneList){
@@ -97,10 +100,11 @@ public class DbUserList implements Serializable {
 				if(gene==null)
 					gene = new DbGene(geneName.trim());
 				
-				listGenes.add(new DbListGenes(gene, this));
+				listGenes.add(new DbListGenes(gene));
 			}
-			DbList list = GeneralDAO.addDbList(listGenes);
+			DbList list = GeneralDAO.getDbList(listGenes);
 			setDbList(list);
+			list.addUserList(this);
 		}
 	}
 
@@ -113,9 +117,9 @@ public class DbUserList implements Serializable {
 				DbGene gene = GeneralDAO.getGene(split[0]);
 				if(gene==null)
 					gene = new DbGene(split[0].trim());
-				listGenes.add(new DbListGenes(gene, this, Double.parseDouble(split[1])));
+				listGenes.add(new DbListGenes(gene, Double.parseDouble(split[1])));
 			} catch (NumberFormatException nfe) {
-				listGenes.add(new DbListGenes(new DbGene(split[0].trim()), this));
+				listGenes.add(new DbListGenes(new DbGene(split[0].trim())));
 			}
 		}
 		return listGenes;
@@ -144,6 +148,7 @@ public class DbUserList implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "listId", nullable = false)
+	@Cascade({ CascadeType.ALL })
 	public DbList getDbList() {
 		return dbList;
 	}
@@ -198,7 +203,25 @@ public class DbUserList implements Serializable {
 		this.isFuzzy = isFuzzy;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
+	@Column(name = "isFuzzy")
+	public boolean getIsSaved() {
+		return isSaved;
+	}
+
+	public void setIsSaved(boolean isSaved) {
+		this.isSaved = isSaved;
+	}
+	
+	@Column(name = "shortId")
+	public String getShortId() {
+		return shortId;
+	}
+
+	public void setShortId(String shortId) {
+		this.shortId = shortId;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList", orphanRemoval = true)
 	@BatchSize(size = 10)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListGenes> getDbListGenes() {
