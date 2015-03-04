@@ -203,7 +203,7 @@ public class DbUserList implements Serializable {
 		this.isFuzzy = isFuzzy;
 	}
 
-	@Column(name = "isFuzzy")
+	@Column(name = "isSaved")
 	public boolean getIsSaved() {
 		return isSaved;
 	}
