@@ -221,7 +221,7 @@ public class DbUserList implements Serializable {
 		this.shortId = shortId;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList", orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
 	@BatchSize(size = 10)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListGenes> getDbListGenes() {
@@ -249,7 +249,7 @@ public class DbUserList implements Serializable {
 	@Transient
 	public Collection<DbGene> getDbGenes(){
 		ArrayList<DbGene> genes = new ArrayList<DbGene>();
-		for(DbListGenes listGenes:dbListGenes)
+		for(DbListGenes listGenes:dbList.getDbListGenes())
 			genes.add(listGenes.getDbGene());
 		return genes;
 	}
