@@ -79,7 +79,7 @@ public class DbList implements Serializable {
 
 	@Override
 	public String toString() {
-		return stringify(this.getDbListGenes());
+		return stringify(getDbListGenes());
 	}
 
 	public void addUserList(DbUserList userList) {

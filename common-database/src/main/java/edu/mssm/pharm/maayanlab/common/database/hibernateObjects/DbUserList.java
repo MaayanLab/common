@@ -221,7 +221,7 @@ public class DbUserList implements Serializable {
 		this.shortId = shortId;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList", orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
 	@BatchSize(size = 10)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListGenes> getDbListGenes() {
