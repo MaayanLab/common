@@ -306,7 +306,7 @@ public class GeneralDAO {
 		} else {
 			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 			for (String geneName : genes){
-				DbGene gene = getGene(geneName);
+				DbGene gene = getGene(geneName.substring(0, 100));
 				listGenes.add(new DbListGenes(gene));
 			}
 			list = getDbListFromListGenes(listGenes);
@@ -319,7 +319,7 @@ public class GeneralDAO {
 		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 		for (String geneName : geneList) {
 			split = geneName.split(",");
-			DbGene gene = getGene(split[0]);
+			DbGene gene = getGene(split[0].substring(0, 100));
 			try {
 				listGenes.add(new DbListGenes(gene, Double.parseDouble(split[1])));
 			} catch (NumberFormatException nfe) {
