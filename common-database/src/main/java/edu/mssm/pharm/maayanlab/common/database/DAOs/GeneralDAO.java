@@ -36,8 +36,21 @@ import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUserList;
 /**
  * All of these methods must be run inside a hibernate session and a transaction (see {@link HibernateUtil}). No method in this class creates, closes, begins or commits a session or transaction.
  * All objects returned by methods in this class are backed by the database.
+ * Typical use case is as follows:
+ * <pre><code>
+ * try {
+ *		HibernateUtil.beginTransaction();
+ *		categories = GeneralDAO.getActiveCategories();
+ *		HibernateUtil.commitTransaction();
+ *	}catch(Exception e){
+ *		HibernateUtil.rollbackTransaction();
+ *		throw new ServletException("Failed to get active categories.", e);
+ *	}finally {
+ *		HibernateUtil.close();
+ *	}
+ * </code></pre>
  * @author Matthew Jones
- * @version %I%, %G%
+ * @version 2.3
  * @see HibernateUtil
  */
 public class GeneralDAO {
@@ -242,7 +255,7 @@ public class GeneralDAO {
 	}
 
 	/**
-	 * Gets the DbList containing the genes in listGenes. If no list matches, one is created.
+	 * Gets the DbList containing the genes and gene weights in listGenes. If no list matches, one is created.
 	 * @param listGenes
 	 * @return
 	 */
@@ -266,6 +279,11 @@ public class GeneralDAO {
 		return returnList;
 	}
 	
+	/**
+	 * Gets the DbList containing the genes genes. All weights are assumed to be 1. If no list matches, one is created.
+	 * @param genes
+	 * @return
+	 */
 	public static DbList getDbListFromGenes(Collection<DbGene> genes){
 		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 		for (DbGene gene : genes){
@@ -274,6 +292,11 @@ public class GeneralDAO {
 		return getDbListFromListGenes(listGenes);
 	}
 	
+	/**
+	 * Gets the DbList containing the genes in genes. Each string in genes can either be a gene name or a gene name followed by a comma followed by a weight.
+	 * @param genes
+	 * @return
+	 */
 	public static DbList getDbListFromStrings(Collection<String> genes){
 		DbList list;
 		if (InputGenes.isFuzzy(genes)) {
@@ -306,7 +329,13 @@ public class GeneralDAO {
 		return listGenes;
 	}
 	
-	public static void saveListLibrary(DbUserList userList, String libraryName) throws IOException {
+	/**
+	 * Adds an interaction between a userList and a gene set library. Note does not call HibernateUtil.saveOrUpdate().
+	 * @param userList
+	 * @param libraryName
+	 * @throws IOException
+	 */
+	public static void addListLibrary(DbUserList userList, String libraryName) {
 		if (userList != null) {
 			DbGeneSetLibrary library = getGeneSetLibrary(libraryName);
 
@@ -318,6 +347,11 @@ public class GeneralDAO {
 		}
 	}
 	
+	/**
+	 * Gets the user list with the given shortId. Null if none exists.
+	 * @param shortId The shortId of the desired list.
+	 * @return The DbUserList or null.
+	 */
 	public static DbUserList getDbUserList(String shortId){
 		DbUserList userList = (DbUserList) HibernateUtil.getCurrentSession().createCriteria(DbUserList.class).add(Restrictions.eq("shortId", shortId)).uniqueResult();
 		return userList;
