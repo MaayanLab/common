@@ -96,6 +96,8 @@ public class GeneralDAO {
 	 */
 	public static DbGene getGene(String geneName) {
 		geneName = geneName.trim().toUpperCase();
+		if(geneName.length()>100)
+			geneName = geneName.substring(0, 100);
 		DbGene gene = (DbGene) HibernateUtil.getCurrentSession().createCriteria(DbGene.class).add(Restrictions.eq("name", geneName)).uniqueResult();
 		if(gene==null)
 			gene = new DbGene(geneName);
@@ -306,7 +308,7 @@ public class GeneralDAO {
 		} else {
 			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 			for (String geneName : genes){
-				DbGene gene = getGene(geneName.substring(0, 100));
+				DbGene gene = getGene(geneName);
 				listGenes.add(new DbListGenes(gene));
 			}
 			list = getDbListFromListGenes(listGenes);
@@ -319,7 +321,7 @@ public class GeneralDAO {
 		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 		for (String geneName : geneList) {
 			split = geneName.split(",");
-			DbGene gene = getGene(split[0].substring(0, 100));
+			DbGene gene = getGene(split[0]);
 			try {
 				listGenes.add(new DbListGenes(gene, Double.parseDouble(split[1])));
 			} catch (NumberFormatException nfe) {
