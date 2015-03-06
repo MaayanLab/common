@@ -151,7 +151,7 @@ public class GeneralDAO {
 	 * @param listId
 	 * @return The list or null if no list matched the Id.
 	 */
-	public static DbOldList getList(int listId) {
+	public static DbOldList getOldList(int listId) {
 		return (DbOldList) HibernateUtil.getCurrentSession().get(DbOldList.class, listId);
 	}
 
