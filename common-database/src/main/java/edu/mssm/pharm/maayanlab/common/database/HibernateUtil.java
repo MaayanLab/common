@@ -9,6 +9,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUser;
+
 /**
  * This utility class acts as a layer between hibernate session operations and an application. Many of the methods here delegate to org.hibernate.Session.
  * See <a href="https://docs.jboss.org/hibernate/orm/3.5/javadocs/org/hibernate/Session.html">Session</a>
@@ -84,8 +86,8 @@ public class HibernateUtil {
 	 * Delegates to Session.merge
 	 * @param object The object to merge.
 	 */
-	public static void merge(Object object){
-		getCurrentSession().merge(object);
+	public static Object merge(Object object){
+		return getCurrentSession().merge(object);
 	}
 	
 	/**
@@ -168,5 +170,10 @@ public class HibernateUtil {
 	 */
 	public static void evict(Object o) {
 		getCurrentSession().evict(o);
+	}
+
+	public static void refresh(Object o) {
+		getCurrentSession().refresh(o);
+		
 	}
 }

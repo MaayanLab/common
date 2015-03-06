@@ -1,7 +1,7 @@
 /**
  * Model for storing users
  * 
- * @author		Edward Y. Chen
+ * @author		Matthew Jones
  * @since		12/13/2012 
  */
 
@@ -26,6 +26,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cascade;
@@ -40,6 +41,31 @@ import edu.mssm.pharm.maayanlab.common.math.HashFunctions;
 @DynamicUpdate
 @Table(name = "users", catalog = "enrichr", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class DbUser implements Serializable {
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((userid == null) ? 0 : userid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DbUser other = (DbUser) obj;
+		if (userid == null) {
+			if (other.userid != null)
+				return false;
+		} else if (!userid.equals(other.userid))
+			return false;
+		return true;
+	}
 
 	private static final long serialVersionUID = 1893085998342363733L;
 	
@@ -209,6 +235,16 @@ public class DbUser implements Serializable {
 	@Cascade({CascadeType.ALL})
 	public Set<DbUserList> getDbUserLists() {
 		return dbUserLists;
+	}
+	
+	@Transient
+	public Set<DbUserList> getSavedDbUserLists(){
+		Set<DbUserList> savedLists = new HashSet<DbUserList>();
+		for(DbUserList userList:getDbUserLists()){
+			if(userList.getIsSaved())
+				savedLists.add(userList);
+		}
+		return savedLists;
 	}
 
 	public void setDbUserLists(Set<DbUserList> dbUserLists) {
