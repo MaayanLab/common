@@ -18,4 +18,11 @@ public class NumberUtilsTest extends TestCase {
 		assertEquals(3, NumberUtils.roundUpDivision(7, 3));
 	}
 	
+	public void testRounding(){
+		assertEquals(1.23, NumberUtils.round(1.225, 2));
+		assertEquals(1.22005, NumberUtils.round(1.2200500, 5));
+		assertEquals(1.22, NumberUtils.round(1.2200, 4));
+		assertEquals(-1.22, NumberUtils.round(-1.2200, 4));
+		assertEquals(-1.22, NumberUtils.round(-1.2200, 7));
+	}
 }

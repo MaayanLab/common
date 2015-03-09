@@ -46,4 +46,8 @@ public class NumberUtils {
 		return (number + divisor - 1) / divisor;
 	}
 	
+	public static double round(double value, int numDP){
+		return (double) Math.round(value * Math.pow(10, numDP)) / Math.pow(10, numDP);
+	}
+	
 }

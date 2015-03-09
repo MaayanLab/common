@@ -19,6 +19,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import edu.mssm.pharm.maayanlab.common.database.Gene;
+import edu.mssm.pharm.maayanlab.common.math.NumberUtils;
 
 @Entity
 @DynamicInsert
@@ -104,7 +105,7 @@ public class DbListGenes extends Gene implements Serializable {
 
 	@Override
 	public String toString() {
-		return dbGene.toString() + " " + getWeight();
+		return dbGene.toString() + " " + NumberUtils.round(getWeight(), 3);
 	}
 
 }

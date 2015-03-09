@@ -270,6 +270,7 @@ public class GeneralDAO {
 		String stringified = DbList.stringify(listGenes);
 		List<DbList> lists = (List<DbList>) HibernateUtil.getCurrentSession().createCriteria(DbList.class).add(Restrictions.eq("hash", hash)).list();
 
+		
 		for (DbList list : lists) {
 			if (stringified.equals(list.toString())) {
 				return list;
