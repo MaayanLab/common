@@ -109,20 +109,6 @@ public class DbList implements Serializable {
 		return String.join("\t", genes);
 	}
 
-	// Normalize degree of membership so you can use Fisher Exact Test on it
-	public void normalizeFuzzyList() {
-
-		double total = 0.0;
-		for (DbListGenes listGene : getDbListGenes()) {
-			total += listGene.getWeight();
-		}
-
-		double scale = getDbListGenes().size() / total;
-		for (DbListGenes listGene : getDbListGenes()) {
-			listGene.setWeight(listGene.getWeight() * scale);
-		}
-	}
-
 	@Transient
 	public Collection<DbGene> getDbGenes(){
 		ArrayList<DbGene> genes = new ArrayList<DbGene>();

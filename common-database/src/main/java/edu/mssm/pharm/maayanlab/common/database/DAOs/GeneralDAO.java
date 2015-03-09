@@ -77,6 +77,9 @@ public class GeneralDAO {
 	public static Map<DbTerm, List<Gene>> getOverlappingTermsAndGenes(DbList list, DbGeneSetLibrary geneSetLibrary) {
 		HashMap<DbTerm, List<Gene>> termOverlaps = new HashMap<DbTerm, List<Gene>>();
 
+		if(list.getDbGenes().size() == 0)
+			return termOverlaps;
+		
 		List<Object[]> queryResults = HibernateUtil.getCurrentSession().getNamedQuery("getOverlappingTerms").setParameterList("searchList", list.getDbGenes())
 				.setParameter("library", geneSetLibrary).list();
 
@@ -277,7 +280,7 @@ public class GeneralDAO {
 		returnList.setDbListGenes(new HashSet<DbListGenes>(listGenes));
 		for(DbListGenes listGene:listGenes)
 			listGene.setDbList(returnList);
-		returnList.setHash(hash);;
+		returnList.setHash(hash);
 		return returnList;
 	}
 	
@@ -304,7 +307,6 @@ public class GeneralDAO {
 		if (InputGenes.isFuzzy(genes)) {
 			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(genes);
 			list = getDbListFromListGenes(listGenes);
-			list.normalizeFuzzyList();
 		} else {
 			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 			for (String geneName : genes){
@@ -328,9 +330,22 @@ public class GeneralDAO {
 				listGenes.add(new DbListGenes(gene));
 			}
 		}
+		normalizeListGenes(listGenes);
 		return listGenes;
 	}
 	
+	private static void normalizeListGenes(HashSet<DbListGenes> listGenes) {
+		double total = 0.0;
+		for (DbListGenes listGene : listGenes) {
+			total += listGene.getWeight();
+		}
+
+		double scale = listGenes.size() / total;
+		for (DbListGenes listGene : listGenes) {
+			listGene.setWeight(listGene.getWeight() * scale);
+		}
+	}
+
 	/**
 	 * Adds an interaction between a userList and a gene set library. Note does not call HibernateUtil.saveOrUpdate().
 	 * @param userList
