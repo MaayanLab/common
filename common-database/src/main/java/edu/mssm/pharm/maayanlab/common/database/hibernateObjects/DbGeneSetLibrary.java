@@ -18,8 +18,6 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -42,7 +40,7 @@ import edu.mssm.pharm.maayanlab.common.database.HibernateUtil;
 public class DbGeneSetLibrary implements Serializable {
 
 	private static final long serialVersionUID = -5707352435128205417L;
-	private int libraryId;
+	private Integer libraryId;
 	@Expose
 	@SerializedName("name")
 	private String libraryName;
@@ -69,12 +67,12 @@ public class DbGeneSetLibrary implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "libraryId")
-	public int getLibraryId() {
+	@Column(name = "libraryId", unique = true, nullable = false)
+	public Integer getLibraryId() {
 		return libraryId;
 	}
 
-	public void setLibraryId(int id) {
+	public void setLibraryId(Integer id) {
 		this.libraryId = id;
 	}
 

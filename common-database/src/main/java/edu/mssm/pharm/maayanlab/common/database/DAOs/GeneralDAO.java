@@ -248,6 +248,18 @@ public class GeneralDAO {
 				.add(Restrictions.eq("name", termName)).uniqueResult();
 		return term;
 	}
+	
+	/**
+	 * Gets the term with the given name in the given library.
+	 * @param library
+	 * @param termName
+	 * @return
+	 */
+	public static DbTerm getTerm(DbGeneSetLibrary library, String termName) {
+		DbTerm term = (DbTerm) HibernateUtil.getCurrentSession().createCriteria(DbTerm.class).add(Restrictions.eq("dbGeneSetLibrary", library))
+				.add(Restrictions.eq("name", termName)).uniqueResult();
+		return term;
+	}
 
 	/**
 	 * Gets the DbLibraryCategory object with the given name. If no entry exists in the database, null is returned.
