@@ -30,7 +30,7 @@ public class DbListGenes extends Gene implements Serializable {
 	private static final long serialVersionUID = 8287127875319016100L;
 	private int listGeneId;
 	private DbGene dbGene;
-	private DbUserList dbUserList;
+//	private DbUserList dbUserList;
 	private DbList dbList;
 	private Double weight = 1.0;
 
@@ -57,15 +57,15 @@ public class DbListGenes extends Gene implements Serializable {
 		this.listGeneId = listGeneId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "userListId")
-	public DbUserList getDbUserList() {
-		return this.dbUserList;
-	}
-
-	public void setDbUserList(DbUserList dbUserList) {
-		this.dbUserList = dbUserList;
-	}
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "userListId")
+//	public DbUserList getDbUserList() {
+//		return this.dbUserList;
+//	}
+//
+//	public void setDbUserList(DbUserList dbUserList) {
+//		this.dbUserList = dbUserList;
+//	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "listId", nullable = false)

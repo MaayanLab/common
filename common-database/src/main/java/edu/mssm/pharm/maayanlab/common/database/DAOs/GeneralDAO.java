@@ -22,7 +22,6 @@ import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbCanvas;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbGene;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbGeneSetLibrary;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryCategory;
-import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryStatistics;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbList;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbListGenes;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbListLibrary;
@@ -207,15 +206,6 @@ public class GeneralDAO {
 	}
 
 	/**
-	 * Get the library statistics for all libraries.
-	 * @return A list of DbLibraryStatistics objects.
-	 */
-	public static List<DbLibraryStatistics> getLibraryStatistics() {
-		List<DbLibraryStatistics> stats = HibernateUtil.getCurrentSession().getNamedQuery("getDatasetStatistics").list();
-		return stats;
-	}
-
-	/**
 	 * Gets all terms containing a gene and organises them by library.
 	 * @param gene The name of the gene you want to look for.
 	 * @return A map where the keys are library names and the values are lists containing the term names that contain the gene.
@@ -385,5 +375,23 @@ public class GeneralDAO {
 	public static DbUserList getDbUserList(String shortId){
 		DbUserList userList = (DbUserList) HibernateUtil.getCurrentSession().createCriteria(DbUserList.class).add(Restrictions.eq("shortId", shortId)).uniqueResult();
 		return userList;
+	}
+	
+	
+	/**
+	 * Gets the gene pool size of the library
+	 * @param library The library.
+	 * @return The pool size.
+	 */
+	public static long getGenePoolSize(DbGeneSetLibrary library){
+		return (Long) HibernateUtil.getCurrentSession().getNamedQuery("genePoolSize").setParameter("library", library).uniqueResult();
+	}
+
+	/**
+	 * Gets all the active libraries.
+	 * @return A list of active libraries.
+	 */
+	public static List<DbGeneSetLibrary> getActiveLibraries() {
+		return HibernateUtil.getCurrentSession().createCriteria(DbGeneSetLibrary.class).add(Restrictions.eq("isActive", true)).list();
 	}
 }

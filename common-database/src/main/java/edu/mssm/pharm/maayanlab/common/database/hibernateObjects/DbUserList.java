@@ -22,7 +22,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
@@ -48,7 +47,7 @@ public class DbUserList implements Serializable {
 	private boolean isFuzzy;
 	private boolean isSaved;
 	private String shortId;
-	private Set<DbListGenes> dbListGenes;
+//	private Set<DbListGenes> dbListGenes;
 	private Set<DbListLibrary> dbListLibrary = new HashSet<DbListLibrary>();
 
 	public DbUserList() {
@@ -178,7 +177,7 @@ public class DbUserList implements Serializable {
 		this.isSaved = isSaved;
 	}
 
-	@Column(name = "shortId")
+	@Column(name = "shortId", unique = true)
 	public String getShortId() {
 		return shortId;
 	}
@@ -187,16 +186,16 @@ public class DbUserList implements Serializable {
 		this.shortId = shortId;
 	}
 
-	 @OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
-	 @BatchSize(size = 10)
-	 @Cascade({ CascadeType.ALL })
-	 public Set<DbListGenes> getDbListGenes() {
-	 return dbListGenes;
-	 }
-	
-	 public void setDbListGenes(Set<DbListGenes> listGenes) {
-	 this.dbListGenes = listGenes;
-	 }
+//	 @OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
+//	 @BatchSize(size = 10)
+//	 @Cascade({ CascadeType.ALL })
+//	 public Set<DbListGenes> getDbListGenes() {
+//	 return dbListGenes;
+//	 }
+//	
+//	 public void setDbListGenes(Set<DbListGenes> listGenes) {
+//	 this.dbListGenes = listGenes;
+//	 }
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
 	@Cascade({ CascadeType.ALL })

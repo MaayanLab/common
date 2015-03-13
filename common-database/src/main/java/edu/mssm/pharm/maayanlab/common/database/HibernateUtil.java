@@ -9,8 +9,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbUser;
-
 /**
  * This utility class acts as a layer between hibernate session operations and an application. Many of the methods here delegate to org.hibernate.Session.
  * See <a href="https://docs.jboss.org/hibernate/orm/3.5/javadocs/org/hibernate/Session.html">Session</a>
@@ -135,10 +133,20 @@ public class HibernateUtil {
 	 * @param theClass The class of the object
 	 * @param id The Id of the object.
 	 * @return The object with that ID. This assumes it exists, it will not return null if it does not - you will get an error instead when
-	 * you try to use the object.
+	 * you try to use the object. Use get if you are unsure it exists.
 	 */
 	public static Object load(Class theClass, Serializable id){
 		return getCurrentSession().load(theClass, id);
+	}
+	
+	/**
+	 * Gets an object by it's ID from the DB.
+	 * @param theClass The class of the object
+	 * @param id The Id of the object.
+	 * @return The object with that ID or null if none exists.
+	 */
+	public static Object get(Class theClass, Serializable id) {
+		return getCurrentSession().get(theClass, id);
 	}
 	
 	/**
@@ -176,4 +184,6 @@ public class HibernateUtil {
 		getCurrentSession().refresh(o);
 		
 	}
+
+	
 }

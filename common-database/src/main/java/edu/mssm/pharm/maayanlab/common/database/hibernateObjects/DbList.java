@@ -47,7 +47,7 @@ public class DbList implements Serializable {
 		this.listId = listId;
 	}
 
-	@Column(name = "hash")
+	@Column(name = "hash", unique = true, nullable = true)
 	public int getHash() {
 		return hash;
 	}

@@ -1,6 +1,7 @@
 package edu.mssm.pharm.maayanlab.common.database.hibernateObjects;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -18,21 +19,25 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.FetchMode;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import edu.mssm.pharm.maayanlab.common.database.HibernateUtil;
+import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 
 @NamedQueries({
 		@NamedQuery(name = "getActiveLibraries", query = "FROM DbGeneSetLibrary WHERE isActive = 1"),
 		@NamedQuery(name = "genePoolSize", query = "SELECT count(distinct genes) " + "FROM DbTerm term " + "join term.dbTermGenes as termGenes " + "join termGenes.dbGene as genes "
-				+ "where term.dbGeneSetLibrary.libraryName=:libraryName"), })
+				+ "where term.dbGeneSetLibrary=:library"), })
 @Entity
 @DynamicInsert
 @DynamicUpdate
@@ -45,18 +50,30 @@ public class DbGeneSetLibrary implements Serializable {
 	@SerializedName("name")
 	private String libraryName;
 	@Expose
-	private boolean isFuzzy;
+	private Boolean isFuzzy;
 	@Expose
-	private boolean hasGrid;
-	private boolean isRanked;
+	private Boolean hasGrid;
+	private Boolean isRanked;
 	@Expose
 	private String format;
-	private boolean isActive;
+	private Boolean isActive;
+	
+	private String description;
+	private String publication;
+	private String source;
+	private String author;
+	private Date creationDate;
+	
+	private int numTerms = 0;
+	private int geneCoverage = 0;
+	private float genesPerTerm = 0;
+	private String link = "";
+	
 	private DbLibraryCategory dbLibraryCategory;
 	private List<DbTerm> dbTerms;
 	@Transient
 	private int genePoolSize = -1;
-	private int displayOrder;
+	private int displayOrder = 1000000;
 
 	public DbGeneSetLibrary() {
 	}
@@ -130,6 +147,81 @@ public class DbGeneSetLibrary implements Serializable {
 		this.isActive = isActive;
 	}
 
+	/**
+	 * @return the description
+	 */
+	@Column(name = "description")
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the publication
+	 */
+	@Column(name = "publication")
+	public String getPublication() {
+		return publication;
+	}
+
+	/**
+	 * @param publication the publication to set
+	 */
+	public void setPublication(String publication) {
+		this.publication = publication;
+	}
+
+	/**
+	 * @return the source
+	 */
+	@Column(name = "source")
+	public String getSource() {
+		return source;
+	}
+
+	/**
+	 * @param source the source to set
+	 */
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	/**
+	 * @return the author
+	 */
+	@Column(name = "author")
+	public String getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	/**
+	 * @return the creationDate
+	 */
+	@Column(name = "creationDate")
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
 	@OrderColumn
 	@Column(name = "displayOrder")
 	public int getDisplayOrder() {
@@ -138,6 +230,42 @@ public class DbGeneSetLibrary implements Serializable {
 
 	public void setDisplayOrder(int displayOrder) {
 		this.displayOrder = displayOrder;
+	}
+	
+	@Column(name = "numTerms", nullable = false)
+	public int getNumTerms() {
+		return numTerms;
+	}
+
+	public void setNumTerms(int numTerms) {
+		this.numTerms = numTerms;
+	}
+
+	@Column(name = "geneCoverage", nullable = false)
+	public int getGeneCoverage() {
+		return geneCoverage;
+	}
+
+	public void setGeneCoverage(int geneCoverage) {
+		this.geneCoverage = geneCoverage;
+	}
+
+	@Column(name = "genesPerTerm", nullable = false)
+	public float getGenesPerTerm() {
+		return genesPerTerm;
+	}
+
+	public void setGenesPerTerm(float genesPerTerm) {
+		this.genesPerTerm = genesPerTerm;
+	}
+
+	@Column(name = "link")
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -150,7 +278,8 @@ public class DbGeneSetLibrary implements Serializable {
 		this.dbLibraryCategory = category;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbGeneSetLibrary")
+	@LazyCollection(LazyCollectionOption.EXTRA)
+	@OneToMany(mappedBy = "dbGeneSetLibrary")
 	@Cascade({ CascadeType.ALL })
 	@BatchSize(size = 10)
 	public List<DbTerm> getDbTerms() {
@@ -169,9 +298,7 @@ public class DbGeneSetLibrary implements Serializable {
 	@Transient
 	public int getGenePoolSize() {
 		if (genePoolSize == -1) {
-			long poolSize = 0;
-			poolSize = (Long) HibernateUtil.getCurrentSession().getNamedQuery("genePoolSize").setString("libraryName", libraryName).uniqueResult();
-			genePoolSize = (int) poolSize;
+			genePoolSize = (int) GeneralDAO.getGenePoolSize(this);
 		}
 
 		return genePoolSize;
