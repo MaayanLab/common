@@ -19,7 +19,6 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.FetchMode;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -31,13 +30,13 @@ import org.hibernate.annotations.LazyCollectionOption;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import edu.mssm.pharm.maayanlab.common.database.HibernateUtil;
 import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 
 @NamedQueries({
 		@NamedQuery(name = "getActiveLibraries", query = "FROM DbGeneSetLibrary WHERE isActive = 1"),
 		@NamedQuery(name = "genePoolSize", query = "SELECT count(distinct genes) " + "FROM DbTerm term " + "join term.dbTermGenes as termGenes " + "join termGenes.dbGene as genes "
-				+ "where term.dbGeneSetLibrary=:library"), })
+				+ "where term.dbGeneSetLibrary=:library")
+})
 @Entity
 @DynamicInsert
 @DynamicUpdate
@@ -70,6 +69,8 @@ public class DbGeneSetLibrary implements Serializable {
 	private String link = "";
 	
 	private DbLibraryCategory dbLibraryCategory;
+	private String canvas;
+	
 	private List<DbTerm> dbTerms;
 	@Transient
 	private int genePoolSize = -1;
@@ -276,6 +277,14 @@ public class DbGeneSetLibrary implements Serializable {
 
 	public void setDbLibraryCategory(DbLibraryCategory category) {
 		this.dbLibraryCategory = category;
+	}
+	
+	@Column(name = "canvas")
+	public String getCanvas() {
+		return canvas;
+	}
+	public void setCanvas(String canvas) {
+		this.canvas = canvas;
 	}
 
 	@LazyCollection(LazyCollectionOption.EXTRA)

@@ -22,7 +22,6 @@
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryCategory"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbTerm"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbTermGene"/>
-		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbCanvas"/>
 		<mapping class="edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbList"/>
 	</session-factory>
 </hibernate-configuration>

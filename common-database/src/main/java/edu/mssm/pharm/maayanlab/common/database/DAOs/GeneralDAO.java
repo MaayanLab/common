@@ -18,7 +18,6 @@ import org.hibernate.criterion.Restrictions;
 import edu.mssm.pharm.maayanlab.common.bio.InputGenes;
 import edu.mssm.pharm.maayanlab.common.database.Gene;
 import edu.mssm.pharm.maayanlab.common.database.HibernateUtil;
-import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbCanvas;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbGene;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbGeneSetLibrary;
 import edu.mssm.pharm.maayanlab.common.database.hibernateObjects.DbLibraryCategory;
@@ -164,15 +163,6 @@ public class GeneralDAO {
 	 */
 	public static DbSharedList getSharedList(int sharedListId) {
 		return (DbSharedList) HibernateUtil.getCurrentSession().get(DbSharedList.class, sharedListId);
-	}
-
-	/**
-	 * Get the canvas for a library.
-	 * @param libraryName The name of the library
-	 * @return A DbCanvas object or null if no library matched libraryName.
-	 */
-	public static DbCanvas getCanvas(String libraryName) {
-		return (DbCanvas) HibernateUtil.getCurrentSession().getNamedQuery("getCanvas").setParameter("libraryName", libraryName).uniqueResult();
 	}
 
 	/**
