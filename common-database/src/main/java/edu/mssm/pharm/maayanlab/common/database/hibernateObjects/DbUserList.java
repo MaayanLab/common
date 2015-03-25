@@ -47,7 +47,9 @@ public class DbUserList implements Serializable {
 	private boolean isFuzzy;
 	private boolean isSaved;
 	private String shortId;
-//	private Set<DbListGenes> dbListGenes;
+	private boolean contributed;
+	private String fullDescription;
+	private boolean privacy;
 	private Set<DbListLibrary> dbListLibrary = new HashSet<DbListLibrary>();
 
 	public DbUserList() {
@@ -186,16 +188,32 @@ public class DbUserList implements Serializable {
 		this.shortId = shortId;
 	}
 
-//	 @OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
-//	 @BatchSize(size = 10)
-//	 @Cascade({ CascadeType.ALL })
-//	 public Set<DbListGenes> getDbListGenes() {
-//	 return dbListGenes;
-//	 }
-//	
-//	 public void setDbListGenes(Set<DbListGenes> listGenes) {
-//	 this.dbListGenes = listGenes;
-//	 }
+	@Column(name="contributed")
+	public boolean getContributed() {
+		return contributed;
+	}
+
+	public void setContributed(boolean contributed) {
+		this.contributed = contributed;
+	}
+	
+	@Column(name="fullDescription")
+	public String getFullDescription() {
+		return fullDescription;
+	}
+
+	public void setFullDescription(String fullDescription) {
+		this.fullDescription = fullDescription;
+	}
+	
+	@Column(name="privacy")
+	public boolean getPrivacy() {
+		return privacy;
+	}
+
+	public void setPrivacy(boolean privacy) {
+		this.privacy = privacy;
+	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dbUserList")
 	@Cascade({ CascadeType.ALL })
