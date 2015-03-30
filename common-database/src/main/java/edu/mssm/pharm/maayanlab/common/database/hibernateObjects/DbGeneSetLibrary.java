@@ -20,6 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
@@ -35,11 +37,11 @@ import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 @NamedQueries({
 		@NamedQuery(name = "getActiveLibraries", query = "FROM DbGeneSetLibrary WHERE isActive = 1"),
 		@NamedQuery(name = "genePoolSize", query = "SELECT count(distinct genes) " + "FROM DbTerm term " + "join term.dbTermGenes as termGenes " + "join termGenes.dbGene as genes "
-				+ "where term.dbGeneSetLibrary=:library")
-})
+				+ "where term.dbGeneSetLibrary=:library") })
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Table(name = "geneSetLibrary", catalog = "enrichr")
 public class DbGeneSetLibrary implements Serializable {
 
@@ -56,21 +58,21 @@ public class DbGeneSetLibrary implements Serializable {
 	@Expose
 	private String format;
 	private Boolean isActive;
-	
+
 	private String description;
 	private String publication;
 	private String source;
 	private String author;
 	private Date creationDate;
-	
+
 	private int numTerms = 0;
 	private int geneCoverage = 0;
 	private float genesPerTerm = 0;
 	private String link = "";
-	
+
 	private DbLibraryCategory dbLibraryCategory;
 	private String canvas;
-	
+
 	private List<DbTerm> dbTerms;
 	@Transient
 	private int genePoolSize = -1;
@@ -157,7 +159,8 @@ public class DbGeneSetLibrary implements Serializable {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -172,7 +175,8 @@ public class DbGeneSetLibrary implements Serializable {
 	}
 
 	/**
-	 * @param publication the publication to set
+	 * @param publication
+	 *            the publication to set
 	 */
 	public void setPublication(String publication) {
 		this.publication = publication;
@@ -187,7 +191,8 @@ public class DbGeneSetLibrary implements Serializable {
 	}
 
 	/**
-	 * @param source the source to set
+	 * @param source
+	 *            the source to set
 	 */
 	public void setSource(String source) {
 		this.source = source;
@@ -202,7 +207,8 @@ public class DbGeneSetLibrary implements Serializable {
 	}
 
 	/**
-	 * @param author the author to set
+	 * @param author
+	 *            the author to set
 	 */
 	public void setAuthor(String author) {
 		this.author = author;
@@ -217,7 +223,8 @@ public class DbGeneSetLibrary implements Serializable {
 	}
 
 	/**
-	 * @param creationDate the creationDate to set
+	 * @param creationDate
+	 *            the creationDate to set
 	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
@@ -232,7 +239,7 @@ public class DbGeneSetLibrary implements Serializable {
 	public void setDisplayOrder(int displayOrder) {
 		this.displayOrder = displayOrder;
 	}
-	
+
 	@Column(name = "numTerms", nullable = false)
 	public int getNumTerms() {
 		return numTerms;
@@ -278,11 +285,12 @@ public class DbGeneSetLibrary implements Serializable {
 	public void setDbLibraryCategory(DbLibraryCategory category) {
 		this.dbLibraryCategory = category;
 	}
-	
+
 	@Column(name = "canvas")
 	public String getCanvas() {
 		return canvas;
 	}
+
 	public void setCanvas(String canvas) {
 		this.canvas = canvas;
 	}

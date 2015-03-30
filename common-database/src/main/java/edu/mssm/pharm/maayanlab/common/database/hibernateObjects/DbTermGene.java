@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,6 +25,7 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 @Table(name = "termGenes", catalog = "enrichr")
 public class DbTermGene extends Gene implements Serializable {
 
