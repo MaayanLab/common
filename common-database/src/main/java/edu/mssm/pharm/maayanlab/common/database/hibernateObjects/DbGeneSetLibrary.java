@@ -51,13 +51,13 @@ public class DbGeneSetLibrary implements Serializable {
 	@SerializedName("name")
 	private String libraryName;
 	@Expose
-	private Boolean isFuzzy;
+	private Boolean isFuzzy = false;
 	@Expose
-	private Boolean hasGrid;
-	private Boolean isRanked;
+	private Boolean hasGrid = false;
+	private Boolean isRanked = false;
 	@Expose
 	private String format;
-	private Boolean isActive;
+	private Boolean isActive = false;
 
 	private String description;
 	private String publication;
