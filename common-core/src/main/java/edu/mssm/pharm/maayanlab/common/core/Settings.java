@@ -1,12 +1,21 @@
 package edu.mssm.pharm.maayanlab.common.core;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Settings {
+public class Settings implements Serializable{
 	
+	private static final long serialVersionUID = -3535786835726140375L;
 	private HashMap<String, String> settings = new HashMap<String, String>();
+	
+
+	public Settings(){}
+	
+	public Settings(Settings s){
+		loadSettings(s);
+	}
 	
 	public String get(String setting) {
 		if (settings.containsKey(setting))
@@ -54,4 +63,6 @@ public class Settings {
 	public void loadSettings(Settings externalSettings) {
 		settings.putAll(externalSettings.settings);
 	}
+	
+	
 }

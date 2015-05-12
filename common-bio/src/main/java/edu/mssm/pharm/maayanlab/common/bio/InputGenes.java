@@ -49,12 +49,12 @@ public class InputGenes {
 			
 			try {
 				double degreeOfMembership = Double.parseDouble(splitGene[1]);
-				if (degreeOfMembership < 0 || degreeOfMembership > 1) {
+				if (degreeOfMembership < -1 || degreeOfMembership > 1) {
 					// Point out which degree of membership is out of bounds
 					throw new NumberFormatException();
 				}
 			} catch (NumberFormatException nfe) {
-				throw new ParseException("Invalid input: " + splitGene[0] + " with a degree of membership of " + splitGene[1] + " at line " + (i+1) + " is out of bounds. Membership must be between 0 and 1 (inclusive)", i);
+				throw new ParseException("Invalid input: " + splitGene[0] + " with a degree of membership of " + splitGene[1] + " at line " + (i+1) + " is out of bounds. Membership must be between -1 and 1 (inclusive)", i);
 			}
 			i++;
 		}

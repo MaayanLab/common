@@ -295,10 +295,10 @@ public class GeneralDAO {
 	 * @param genes
 	 * @return
 	 */
-	public static DbList getDbListFromStrings(Collection<String> genes){
+	public static DbList getDbListFromStrings(Collection<String> genes, boolean normalize){
 		DbList list;
 		if (InputGenes.isFuzzy(genes)) {
-			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(genes);
+			HashSet<DbListGenes> listGenes = parseFuzzyGeneList(genes, normalize);
 			list = getDbListFromListGenes(listGenes);
 		} else {
 			HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
@@ -311,7 +311,7 @@ public class GeneralDAO {
 		return list;
 	}
 	
-	private static HashSet<DbListGenes> parseFuzzyGeneList(Collection<String> geneList) {
+	private static HashSet<DbListGenes> parseFuzzyGeneList(Collection<String> geneList, boolean normalize) {
 		String[] split;
 		HashSet<DbListGenes> listGenes = new HashSet<DbListGenes>();
 		for (String geneName : geneList) {
@@ -323,14 +323,15 @@ public class GeneralDAO {
 				listGenes.add(new DbListGenes(gene));
 			}
 		}
-		normalizeListGenes(listGenes);
+		if(normalize)
+			normalizeListGenes(listGenes);
 		return listGenes;
 	}
 	
 	private static void normalizeListGenes(HashSet<DbListGenes> listGenes) {
 		double total = 0.0;
 		for (DbListGenes listGene : listGenes) {
-			total += listGene.getWeight();
+			total += Math.abs(listGene.getWeight());
 		}
 
 		double scale = listGenes.size() / total;

@@ -5,20 +5,20 @@
  
     <diskStore path="java.io.tmpdir/ehcache" />
  
-    <defaultCache maxEntriesLocalHeap="10000" eternal="false"
+    <defaultCache maxBytesLocalHeap="512m" eternal="false"
         timeToIdleSeconds="120" timeToLiveSeconds="120" diskSpoolBufferSizeMB="30"
-        maxEntriesLocalDisk="10000000" diskExpiryThreadIntervalSeconds="120"
+        maxBytesLocalDisk="5g" diskExpiryThreadIntervalSeconds="120"
         memoryStoreEvictionPolicy="LRU" statistics="true">
         <persistence strategy="localTempSwap" />
     </defaultCache>
  
     <cache name="org.hibernate.cache.internal.StandardQueryCache"
-        maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="120">
+        maxBytesLocalHeap="512m" eternal="false" timeToLiveSeconds="120">
         <persistence strategy="localTempSwap" />
     </cache>
  
     <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
-        maxEntriesLocalHeap="5000" eternal="true">
+         maxBytesLocalHeap="512m" eternal="true">
         <persistence strategy="localTempSwap" />
     </cache>
 </ehcache>

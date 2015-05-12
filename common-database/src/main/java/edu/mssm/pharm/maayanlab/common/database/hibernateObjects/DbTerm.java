@@ -18,8 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicInsert;
@@ -38,7 +36,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 @Table(name = "term", catalog = "enrichr")
 public class DbTerm implements Serializable {
 

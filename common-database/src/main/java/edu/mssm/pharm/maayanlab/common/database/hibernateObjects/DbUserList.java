@@ -79,7 +79,7 @@ public class DbUserList implements Serializable {
 		this.ipAddress = ipAddress;
 	}
 
-	public DbUserList(Collection<String> geneList, boolean validate) throws ParseException {
+	public DbUserList(Collection<String> geneList, boolean validate, boolean normalize) throws ParseException {
 		this.setIsFuzzy(InputGenes.isFuzzy(geneList));
 		if (validate) // Check if input list is valid
 			if (isFuzzy)
@@ -87,7 +87,7 @@ public class DbUserList implements Serializable {
 			else
 				InputGenes.validateInputGenes(geneList);
 
-		DbList list = GeneralDAO.getDbListFromStrings(geneList);
+		DbList list = GeneralDAO.getDbListFromStrings(geneList, normalize);
 		setDbList(list);
 		list.addUserList(this);
 	}

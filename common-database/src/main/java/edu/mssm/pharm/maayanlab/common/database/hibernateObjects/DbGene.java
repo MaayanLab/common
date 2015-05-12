@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -18,7 +20,7 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-//@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 @Table(name = "genes", catalog = "enrichr")
 public class DbGene extends Gene implements Serializable {
 

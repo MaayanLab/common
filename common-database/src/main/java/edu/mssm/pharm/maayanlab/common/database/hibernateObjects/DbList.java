@@ -57,7 +57,6 @@ public class DbList implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "dbList")
-	@BatchSize(size = 10)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbUserList> getDbUserLists() {
 		return dbUserLists;
@@ -68,7 +67,7 @@ public class DbList implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "dbList", orphanRemoval = true)
-	@BatchSize(size = 10)
+	@BatchSize(size = 100)
 	@Cascade({ CascadeType.ALL })
 	public Set<DbListGenes> getDbListGenes() {
 		return dbListGenes;
