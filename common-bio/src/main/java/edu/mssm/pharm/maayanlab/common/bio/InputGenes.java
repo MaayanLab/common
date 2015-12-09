@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 public class InputGenes {
 	
-	private static final Pattern crispPattern = Pattern.compile("[\\w\\-@./]+");
+	private static final Pattern crispPattern = Pattern.compile("[\\w\\-@./:()\\[\\]_'?*]+");
 
 	public static boolean validateInputGenes(Collection<String> inputGenes) throws ParseException {
 		if (inputGenes.isEmpty())
