@@ -82,8 +82,8 @@ public class DbUserList implements Serializable {
 	public DbUserList(Collection<String> geneList, boolean validate, boolean normalize) throws ParseException {
 		this.setIsFuzzy(InputGenes.isFuzzy(geneList));
 		if (validate) // Check if input list is valid
-			if (isFuzzy)
-				InputGenes.validateFuzzyInputGenes(geneList);
+			if (isFuzzy){
+				InputGenes.validateFuzzyInputGenes(geneList);}
 			else
 				InputGenes.validateInputGenes(geneList);
 

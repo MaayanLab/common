@@ -330,11 +330,17 @@ public class GeneralDAO {
 	
 	private static void normalizeListGenes(HashSet<DbListGenes> listGenes) {
 		double total = 0.0;
+		double max = 0.0;
+		double scale = 1.0;
 		for (DbListGenes listGene : listGenes) {
 			total += Math.abs(listGene.getWeight());
+			// Map gene weights to [0;1] range
+			if(Math.abs(listGene.getWeight()) >= max){
+				max = Math.abs(listGene.getWeight());
+				}
 		}
-
-		double scale = listGenes.size() / total;
+		if(max > 1){
+			scale = 1 / max;}
 		for (DbListGenes listGene : listGenes) {
 			listGene.setWeight(listGene.getWeight() * scale);
 		}
