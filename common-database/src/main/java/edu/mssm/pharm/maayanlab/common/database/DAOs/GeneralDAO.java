@@ -336,9 +336,10 @@ public class GeneralDAO {
 			total += Math.abs(listGene.getWeight());
 			// Map gene weights to [0;1] range
 			if(Math.abs(listGene.getWeight()) >= max){
-				max = Math.abs(listGene.getWeight());
+					max = Math.abs(listGene.getWeight());
 				}
-		}
+			}
+		
 		if(max > 1){
 			scale = 1 / max;}
 		for (DbListGenes listGene : listGenes) {
