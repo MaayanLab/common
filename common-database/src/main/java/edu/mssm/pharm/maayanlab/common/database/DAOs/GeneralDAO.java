@@ -340,8 +340,7 @@ public class GeneralDAO {
 				}
 			}
 		
-		if(max > 1){
-			scale = 1 / max;}
+		scale = 1 / max;
 		for (DbListGenes listGene : listGenes) {
 			listGene.setWeight(listGene.getWeight() * scale);
 		}
