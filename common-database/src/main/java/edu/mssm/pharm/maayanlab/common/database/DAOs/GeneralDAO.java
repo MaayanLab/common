@@ -181,6 +181,33 @@ public class GeneralDAO {
 	}
 
 	/**
+	 * Sorry for this dirty solution the maintainer from the future
+	 * @return
+	 */
+	public static int getCounterLibs() {
+
+		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count(*) FROM genesetlibrary WHERE isActive=1;");
+		List<?> data = query.list();
+
+		BigInteger counterValue = (BigInteger) data.get(0);
+
+		return counterValue.intValue();
+	}	
+	
+	/**
+	 * And for this one too
+	 * @return
+	 */
+	public static int getCounterTerms() {
+
+		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count(*) FROM term JOIN genesetlibrary ON term.libraryId = genesetlibrary.libraryId WHERE isActive = 1;");
+		List<?> data = query.list();
+		BigInteger counterValue = (BigInteger) data.get(0);
+
+		return counterValue.intValue();
+	}		
+	
+	/**
 	 * Increments a counter.
 	 * @param counterName The name of the counter.
 	 * @return The value after incrementing.
