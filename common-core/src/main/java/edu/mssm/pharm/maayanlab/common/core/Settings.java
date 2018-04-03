@@ -20,10 +20,8 @@ public class Settings implements Serializable{
 	public String get(String setting) {
 		if (settings.containsKey(setting))
 			return settings.get(setting);
-		else {
-			System.err.println("Invalid setting: " + setting);
-			return null;
-		}
+		else
+			throw new NullPointerException("Settings.get(" + setting +")");
 	}
 	
 	public boolean getBoolean(String setting) {
@@ -35,6 +33,8 @@ public class Settings implements Serializable{
 	}
 	
 	public void set(String setting, String value) {
+		if(value == null)
+			throw new NullPointerException("Settings.set(" + setting + ", null)");
 		settings.put(setting, value);
 	}
 	
