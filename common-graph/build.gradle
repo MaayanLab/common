@@ -1,0 +1,5 @@
+group = 'edu.mssm.pharm.maayanlab.common'
+description = 'common-graph'
+dependencies {
+  compile project(':common:common-core')
+}

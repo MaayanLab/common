@@ -1,5 +1,6 @@
-.settings
-.project
 .classpath
-target
+.project
+.settings
 bin
+build
+target

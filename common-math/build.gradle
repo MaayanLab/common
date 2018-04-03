@@ -1,0 +1,7 @@
+group = 'edu.mssm.pharm.maayanlab.common'
+description = 'common-math'
+dependencies {
+  compile project(':common:common-core')
+    compile group: 'org.apache.commons', name: 'commons-math3', version:'3.2'
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}

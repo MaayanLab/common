@@ -1,0 +1,6 @@
+group = 'edu.mssm.pharm.maayanlab.common'
+description = 'common-bio'
+dependencies {
+  compile project(':common:common-math')
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}
