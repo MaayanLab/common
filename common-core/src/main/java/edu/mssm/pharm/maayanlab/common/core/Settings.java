@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Collections;
 
 public class Settings implements Serializable{
 	
@@ -66,15 +66,6 @@ public class Settings implements Serializable{
 	}
 	
 	public void dump() {
-		Iterator< HashMap.Entry<String, String> > it = settings.entrySet().iterator();
-		while (it.hasNext()) {
-			HashMap.Entry<String, String> pair = (HashMap.Entry<String, String>)it.next();
-			if(pair.getValue() == null)
-				System.out.println(pair.getKey() + " = null");
-			else
-				System.out.println(pair.getKey() + " = " + pair.getValue());
-			it.remove();
-		}
-		System.out.println();
+		System.out.println(Collections.singletonList(settings));
 	}
 }
