@@ -1,0 +1,8 @@
+include 'common-bio'
+include 'common-core'
+include 'common-database'
+include 'common-geneticalgorithm'
+include 'common-graph'
+include 'common-math'
+include 'common-swing'
+include 'common-web'
