@@ -24,7 +24,7 @@ import edu.mssm.pharm.maayanlab.common.math.NumberUtils;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "listGenes", catalog = "flyenrichr")
+@Table(name = "listGenes", catalog = "wormenrichr")
 public class DbListGenes extends Gene implements Serializable {
 
 	private static final long serialVersionUID = 8287127875319016100L;
