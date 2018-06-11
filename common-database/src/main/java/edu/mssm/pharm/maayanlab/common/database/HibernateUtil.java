@@ -15,7 +15,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
  * <p>
  * To configure the database you would like to use add a hibernate.properties file to your resources folder and define:
  * <ul>
- * <li>hibernate.connection.url = **The url of the database server, eg. jdbc:mysql://master/enrichr **</li>
+ * <li>hibernate.connection.url = **The url of the database server, eg. jdbc:mysql://master/flyenrichr **</li>
  * <li>hibernate.connection.username = *The username of the user you want to use*</li>
  * <li>hibernate.connection.password = *The password for that user.*</li>
  * </ul>

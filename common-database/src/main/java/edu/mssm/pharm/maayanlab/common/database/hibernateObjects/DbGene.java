@@ -21,7 +21,7 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
-@Table(name = "genes", catalog = "enrichr")
+@Table(name = "genes", catalog = "flyenrichr")
 public class DbGene extends Gene implements Serializable {
 
 	private static final long serialVersionUID = -8357672983491020270L;
