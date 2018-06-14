@@ -172,7 +172,7 @@ public class GeneralDAO {
 	 */
 	public static int getCounter(String counterName) {
 
-		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count FROM enrichr.counters where name = :counter").setParameter("counter", counterName);
+		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count FROM yeastenrichr.counters where name = :counter").setParameter("counter", counterName);
 		List<?> data = query.list();
 
 		Integer counterValue = (Integer) data.get(0);
@@ -214,7 +214,7 @@ public class GeneralDAO {
 	 */
 	public static int incrementCounter(String counterName) {
 
-		Query query = HibernateUtil.getCurrentSession().createSQLQuery("CALL enrichr.IncrementCounter(:counter)").setParameter("counter", counterName);
+		Query query = HibernateUtil.getCurrentSession().createSQLQuery("CALL yeastenrichr.IncrementCounter(:counter)").setParameter("counter", counterName);
 		List<?> data = query.list();
 
 		BigInteger counterValue = (BigInteger) data.get(0);
