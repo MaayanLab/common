@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.Part;
 
@@ -26,15 +25,14 @@ public class PartReader {
 		ArrayList<String> inputList = new ArrayList<String>();
 		
 		BufferedReader fileReader = new BufferedReader(new InputStreamReader(chunk.getInputStream()));
-		String line = fileReader.readLine();
-		while (line != null) {
-			StringTokenizer tk = new StringTokenizer(line);
-			String token = tk.nextToken();
-			while (token != null) {
-				inputList.add(token.trim());
-				token = tk.nextToken();
+		String line = null;
+		while ((line = fileReader.readLine()) != null) {
+			String[] elements = line.split("\\s");
+			for (int i = 0; i < elements.length; i++) {
+				String element = elements[i].trim();
+				if (!element.isEmpty())
+					inputList.add(element);
 			}
-			line = fileReader.readLine();
 		}
 		fileReader.close();
 		
