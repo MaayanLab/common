@@ -96,7 +96,7 @@ public class GeneralDAO {
 	 * @return A DbGene object.
 	 */
 	public static DbGene getGene(String geneName) {
-		geneName = geneName.trim().toUpperCase();
+		geneName = geneName.trim();
 		if(geneName.length()>100)
 			geneName = geneName.substring(0, 100);
 		DbGene gene = (DbGene) HibernateUtil.getCurrentSession().createCriteria(DbGene.class).add(Restrictions.eq("name", geneName)).uniqueResult();
