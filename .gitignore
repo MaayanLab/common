@@ -1,7 +1,14 @@
+*.iml
 .classpath
+.DS_Store
 .gradle
+.idea
 .project
 .settings
 bin
 build
+gradle
+gradlew
+gradlew.bat
+out
 target

@@ -229,8 +229,8 @@ public class GeneralDAO {
 	 */
 	public static Map<String, List<String>> getlibrariesAndTermsContaining(String gene) {
 		Criteria criteria = HibernateUtil.getCurrentSession().createCriteria(DbTerm.class);
-		criteria.createAlias("dbTermGenes", "termGenes");
-		criteria.createAlias("termGenes.dbGene", "genes");
+		criteria.createAlias("dbTermGenes", "termgenes");
+		criteria.createAlias("termgenes.dbGene", "genes");
 		criteria.add(Restrictions.eq("genes.name", gene));
 		List<DbTerm> terms = criteria.list();
 

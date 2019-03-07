@@ -40,7 +40,7 @@ import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 @DynamicInsert
 @DynamicUpdate
 //@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-@Table(name = "geneSetLibrary", catalog = "enrichr")
+@Table(name = "genesetlibrary", catalog = "enrichr")
 public class DbGeneSetLibrary implements Serializable {
 
 	private static final long serialVersionUID = -5707352435128205417L;
