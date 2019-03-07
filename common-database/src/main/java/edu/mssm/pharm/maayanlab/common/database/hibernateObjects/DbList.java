@@ -25,7 +25,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "lists", catalog = "yeastenrichr")
+@Table(name = "lists", catalog = "wormenrichr")
 public class DbList implements Serializable {
 
 	private static final long serialVersionUID = -5336418115229427957L;

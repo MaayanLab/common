@@ -25,7 +25,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "shared_genes", catalog = "yeastenrichr")
+
+@Table(name = "shared_genes", catalog = "wormenrichr")
+
 public class DbSharedGene implements Serializable {
 
 	private static final long serialVersionUID = -738468100827509312L;
