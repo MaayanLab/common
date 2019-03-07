@@ -96,7 +96,7 @@ public class GeneralDAO {
 	 * @return A DbGene object.
 	 */
 	public static DbGene getGene(String geneName) {
-		geneName = geneName.trim();
+		geneName = geneName.trim().toUpperCase();
 		if(geneName.length()>100)
 			geneName = geneName.substring(0, 100);
 		DbGene gene = (DbGene) HibernateUtil.getCurrentSession().createCriteria(DbGene.class).add(Restrictions.eq("name", geneName)).uniqueResult();
@@ -171,7 +171,8 @@ public class GeneralDAO {
 	 * @return The value of the counter.
 	 */
 	public static int getCounter(String counterName) {
-		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count FROM wormenrichr.counters where name = :counter").setParameter("counter", counterName);
+
+		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count FROM yeastenrichr.counters where name = :counter").setParameter("counter", counterName);
 		List<?> data = query.list();
 
 		Integer counterValue = (Integer) data.get(0);
@@ -212,7 +213,8 @@ public class GeneralDAO {
 	 * @return The value after incrementing.
 	 */
 	public static int incrementCounter(String counterName) {
-		Query query = HibernateUtil.getCurrentSession().createSQLQuery("CALL wormenrichr.IncrementCounter(:counter)").setParameter("counter", counterName);
+
+		Query query = HibernateUtil.getCurrentSession().createSQLQuery("CALL yeastenrichr.IncrementCounter(:counter)").setParameter("counter", counterName);
 		List<?> data = query.list();
 
 		BigInteger counterValue = (BigInteger) data.get(0);

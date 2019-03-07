@@ -37,8 +37,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @DynamicInsert
 @DynamicUpdate
 //@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
-@Table(name = "term", catalog = "wormenrichr")
-
+@Table(name = "term", catalog = "yeastenrichr")
 public class DbTerm implements Serializable {
 
 	private static final long serialVersionUID = 4059953668344530610L;

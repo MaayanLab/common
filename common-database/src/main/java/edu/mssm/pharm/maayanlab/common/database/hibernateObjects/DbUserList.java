@@ -33,9 +33,7 @@ import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-
-@Table(name = "userLists", catalog = "wormenrichr")
-
+@Table(name = "userLists", catalog = "yeastenrichr")
 public class DbUserList implements Serializable {
 
 	private static final long serialVersionUID = -1064570202349856526L;
@@ -243,4 +241,5 @@ public class DbUserList implements Serializable {
 	public boolean equals(Object obj) {
 		return (obj instanceof DbUserList) && ((DbUserList) obj).userListid == this.userListid;
 	}
+
 }
