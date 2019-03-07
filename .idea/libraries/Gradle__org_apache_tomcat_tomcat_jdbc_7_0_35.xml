@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.tomcat:tomcat-jdbc:7.0.35">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tomcat-jdbc/7.0.35/ab4f4e43a32fa9127dedb3c97d81d8b27863da56/tomcat-jdbc-7.0.35.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tomcat-jdbc/7.0.35/55b5a7ad978a8285bcad584375c21e5d8c7c1345/tomcat-jdbc-7.0.35-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
