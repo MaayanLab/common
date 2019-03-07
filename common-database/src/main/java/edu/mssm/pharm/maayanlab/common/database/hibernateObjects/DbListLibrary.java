@@ -18,7 +18,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "listLibraries", catalog = "wormenrichr")
+@Table(name = "listLibraries", catalog = "yeastenrichr")
 public class DbListLibrary implements Serializable {
 
 	private static final long serialVersionUID = -8305956910782832376L;
