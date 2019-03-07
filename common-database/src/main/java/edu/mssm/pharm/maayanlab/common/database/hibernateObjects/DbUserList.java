@@ -33,7 +33,7 @@ import edu.mssm.pharm.maayanlab.common.database.DAOs.GeneralDAO;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "userLists", catalog = "yeastenrichr")
+@Table(name = "userLists", catalog = "enrichr")
 public class DbUserList implements Serializable {
 
 	private static final long serialVersionUID = -1064570202349856526L;

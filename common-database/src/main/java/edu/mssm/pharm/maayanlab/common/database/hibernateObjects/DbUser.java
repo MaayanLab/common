@@ -39,7 +39,7 @@ import edu.mssm.pharm.maayanlab.common.math.HashFunctions;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "users", catalog = "yeastenrichr", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "users", catalog = "enrichr", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class DbUser implements Serializable {
 
 	@Override
