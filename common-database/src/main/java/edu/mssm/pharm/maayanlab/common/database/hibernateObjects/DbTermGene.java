@@ -25,6 +25,7 @@ import edu.mssm.pharm.maayanlab.common.database.Gene;
 @DynamicUpdate
 //@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 @Table(name = "termGenes", catalog = "wormenrichr")
+
 public class DbTermGene extends Gene implements Serializable {
 
 	private static final long serialVersionUID = 4207016932083532101L;

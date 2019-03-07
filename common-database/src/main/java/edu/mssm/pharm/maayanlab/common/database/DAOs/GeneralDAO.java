@@ -171,7 +171,6 @@ public class GeneralDAO {
 	 * @return The value of the counter.
 	 */
 	public static int getCounter(String counterName) {
-
 		Query query = HibernateUtil.getCurrentSession().createSQLQuery("SELECT count FROM wormenrichr.counters where name = :counter").setParameter("counter", counterName);
 		List<?> data = query.list();
 
@@ -213,7 +212,6 @@ public class GeneralDAO {
 	 * @return The value after incrementing.
 	 */
 	public static int incrementCounter(String counterName) {
-
 		Query query = HibernateUtil.getCurrentSession().createSQLQuery("CALL wormenrichr.IncrementCounter(:counter)").setParameter("counter", counterName);
 		List<?> data = query.list();
 
