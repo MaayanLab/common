@@ -28,7 +28,9 @@ import org.hibernate.annotations.DynamicUpdate;
 // Don't need to include all fields in insert, don't know why not on by default
 @DynamicUpdate
 // Don't need to update all fields in update, don't know why not on by default
+
 @Table(name = "oldLists", catalog = "flyenrichr")
+
 public class DbOldList implements Serializable {
 
 	private static final long serialVersionUID = -1387864947273228907L;

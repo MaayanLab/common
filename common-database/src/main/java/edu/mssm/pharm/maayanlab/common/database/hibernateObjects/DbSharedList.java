@@ -31,7 +31,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+
 @Table(name = "shared_lists", catalog = "flyenrichr")
+
 public class DbSharedList implements Serializable {
 
 	private static final long serialVersionUID = -2740238356775143002L;

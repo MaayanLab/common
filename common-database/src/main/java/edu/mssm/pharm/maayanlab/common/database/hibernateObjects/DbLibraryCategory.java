@@ -26,7 +26,9 @@ import com.google.gson.annotations.SerializedName;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+
 @Table(name = "category", catalog = "flyenrichr")
+
 public class DbLibraryCategory implements Serializable {
 
 	private static final long serialVersionUID = -2742503383047868840L;
