@@ -62,15 +62,24 @@ public class TomcatJDBCConnectionProvider implements ConnectionProvider, Configu
 
             // DriverClass & url
             String jdbcDriverClass = (String) props.get(Environment.DRIVER);
-            String jdbcUrl =  (String)  props.get(Environment.URL);
+            String jdbcUrl =  System.getenv("DB_URL");
+            if (jdbcUrl == null || jdbcUrl.equals("")) {
+                jdbcUrl = (String) props.get(Environment.URL);
+            }
             tomcatJdbcPoolProperties.setDriverClassName(jdbcDriverClass);
             tomcatJdbcPoolProperties.setUrl(jdbcUrl);
             
-            //tomcatJdbcPoolProperties.setJmxEnabled(true); thats the default
+            //tomcatJdbcPoolProperties.setJmxEnabled(true); that's the default
 
             // Username / password
-            String username =  (String) props.get(Environment.USER);
-            String password =  (String) props.get(Environment.PASS);
+            String username =  System.getenv("DB_USER");
+            if (username == null || username.equals("")) {
+                username = (String) props.get(Environment.USER);
+            }
+            String password =  System.getenv("DB_PASS");
+            if (password == null || password.equals("")) {
+                password = (String) props.get(Environment.PASS);
+            }
             tomcatJdbcPoolProperties.setUsername(username);
             tomcatJdbcPoolProperties.setPassword(password);
 
