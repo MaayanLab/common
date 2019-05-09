@@ -46,9 +46,40 @@ import org.hibernate.service.ServiceRegistryBuilder;
 public class HibernateUtil {
 	private static final SessionFactory sessionFactory;
 	
+	private static String findEnv(String key) {
+			String value;
+
+			// Check OS Runtime Environment Variables
+			value = System.getenv(key);
+			if (!(value == null || value.equals("")))
+					return value;
+
+			// Check Java Runtime Properties
+			value = System.getProperty(value);
+			if (!(value == null || value.equals("")))
+					return value;
+
+			return null;
+	}
+
 	static {
 		try {
 			Configuration configuration = new Configuration().configure();
+
+			// Override from properties or environment variable if present
+
+			String url = HibernateUtil.findEnv("DB_URL");
+			if (url != null)
+				configuration.setProperty("hibernate.connection.url", url);
+
+			String user = HibernateUtil.findEnv("DB_USER");
+			if (user != null)
+				configuration.setProperty("hibernate.connection.username", user);
+			
+			String pass = HibernateUtil.findEnv("DB_PASS");
+			if (pass != null)
+				configuration.setProperty("hibernate.connection.password", pass);
+
 			ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
 			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 		} catch (Throwable ex) {

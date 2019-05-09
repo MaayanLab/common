@@ -51,22 +51,6 @@ public class TomcatJDBCConnectionProvider implements ConnectionProvider, Configu
     private DataSource ds;
     PoolProperties tomcatJdbcPoolProperties;
     
-    private String findEnv(String key, String defaultValue) {
-        String value;
-
-        // Check OS Runtime Environment Variables
-        value = System.getenv(key);
-        if (!(value == null || value.equals("")))
-            return value;
-
-        // Check Java Runtime Properties
-        value = System.getProperty(value);
-        if (!(value == null || value.equals("")))
-            return value;
-
-        // Otherwise fallback to default
-        return defaultValue;
-    }
 
     @Override
     public void configure(Map props) throws HibernateException {
@@ -78,21 +62,15 @@ public class TomcatJDBCConnectionProvider implements ConnectionProvider, Configu
 
             // DriverClass & url
             String jdbcDriverClass = (String) props.get(Environment.DRIVER);
-            String jdbcUrl =  findEnv("DB_URL", (String) props.get(Environment.URL));
-            props.put(Environment.URL, jdbcUrl);
-
+            String jdbcUrl =  (String)  props.get(Environment.URL);
             tomcatJdbcPoolProperties.setDriverClassName(jdbcDriverClass);
             tomcatJdbcPoolProperties.setUrl(jdbcUrl);
             
-            //tomcatJdbcPoolProperties.setJmxEnabled(true); that's the default
+            //tomcatJdbcPoolProperties.setJmxEnabled(true); thats the default
 
             // Username / password
-            String username =  findEnv("DB_USER", (String) props.get(Environment.USER));
-            props.put(Environment.USER, username);
-
-            String password =  findEnv("DB_PASS", (String) props.get(Environment.PASS));
-            props.put(Environment.PASS, password);
-
+            String username =  (String) props.get(Environment.USER);
+            String password =  (String) props.get(Environment.PASS);
             tomcatJdbcPoolProperties.setUsername(username);
             tomcatJdbcPoolProperties.setPassword(password);
 
