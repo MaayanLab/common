@@ -79,6 +79,8 @@ public class TomcatJDBCConnectionProvider implements ConnectionProvider, Configu
             // DriverClass & url
             String jdbcDriverClass = (String) props.get(Environment.DRIVER);
             String jdbcUrl =  findEnv("DB_URL", (String) props.get(Environment.URL));
+            props.put(Environment.URL, jdbcUrl);
+
             tomcatJdbcPoolProperties.setDriverClassName(jdbcDriverClass);
             tomcatJdbcPoolProperties.setUrl(jdbcUrl);
             
@@ -86,7 +88,11 @@ public class TomcatJDBCConnectionProvider implements ConnectionProvider, Configu
 
             // Username / password
             String username =  findEnv("DB_USER", (String) props.get(Environment.USER));
+            props.put(Environment.USER, username);
+
             String password =  findEnv("DB_PASS", (String) props.get(Environment.PASS));
+            props.put(Environment.PASS, password);
+
             tomcatJdbcPoolProperties.setUsername(username);
             tomcatJdbcPoolProperties.setPassword(password);
 
