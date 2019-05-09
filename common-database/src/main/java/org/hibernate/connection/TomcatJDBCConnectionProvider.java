@@ -51,6 +51,22 @@ public class TomcatJDBCConnectionProvider implements ConnectionProvider, Configu
     private DataSource ds;
     PoolProperties tomcatJdbcPoolProperties;
     
+    private String findEnv(String key, String defaultValue) {
+        String value;
+
+        // Check OS Runtime Environment Variables
+        value = System.getenv(key);
+        if (!(value == null || value.equals("")))
+            return value;
+
+        // Check Java Runtime Properties
+        value = System.getProperty(value);
+        if (!(value == null || value.equals("")))
+            return value;
+
+        // Otherwise fallback to default
+        return defaultValue;
+    }
 
     @Override
     public void configure(Map props) throws HibernateException {
@@ -62,24 +78,15 @@ public class TomcatJDBCConnectionProvider implements ConnectionProvider, Configu
 
             // DriverClass & url
             String jdbcDriverClass = (String) props.get(Environment.DRIVER);
-            String jdbcUrl =  System.getenv("DB_URL");
-            if (jdbcUrl == null || jdbcUrl.equals("")) {
-                jdbcUrl = (String) props.get(Environment.URL);
-            }
+            String jdbcUrl =  findEnv("DB_URL", (String) props.get(Environment.URL));
             tomcatJdbcPoolProperties.setDriverClassName(jdbcDriverClass);
             tomcatJdbcPoolProperties.setUrl(jdbcUrl);
             
             //tomcatJdbcPoolProperties.setJmxEnabled(true); that's the default
 
             // Username / password
-            String username =  System.getenv("DB_USER");
-            if (username == null || username.equals("")) {
-                username = (String) props.get(Environment.USER);
-            }
-            String password =  System.getenv("DB_PASS");
-            if (password == null || password.equals("")) {
-                password = (String) props.get(Environment.PASS);
-            }
+            String username =  findEnv("DB_USER", (String) props.get(Environment.USER));
+            String password =  findEnv("DB_PASS", (String) props.get(Environment.PASS));
             tomcatJdbcPoolProperties.setUsername(username);
             tomcatJdbcPoolProperties.setPassword(password);
 
