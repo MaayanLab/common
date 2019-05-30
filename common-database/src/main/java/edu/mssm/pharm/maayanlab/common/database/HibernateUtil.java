@@ -55,7 +55,7 @@ public class HibernateUtil {
 					return value;
 
 			// Check Java Runtime Properties
-			value = System.getProperty(value);
+			value = System.getProperty(key);
 			if (!(value == null || value.equals("")))
 					return value;
 
