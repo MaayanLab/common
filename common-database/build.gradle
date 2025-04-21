@@ -1,6 +1,6 @@
 dependencies {
   compile group: 'org.hibernate', name: 'hibernate-core', version:'4.1.8.Final'
-  compile group: 'mysql', name: 'mysql-connector-java', version:'5.1.22'
+  compile group: 'mysql', name: 'mysql-connector-java', version:'8.0.31'
   compile group: 'net.sf.ehcache', name: 'ehcache-core', version:'2.6.9'
   compile group: 'org.hibernate', name: 'hibernate-ehcache', version:'4.1.8.Final'
   compile group: 'org.slf4j', name: 'slf4j-simple', version:'1.7.5'
